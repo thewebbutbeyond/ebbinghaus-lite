@@ -1,18 +1,11 @@
 # Guide technique du viewer
 
-Le viewer est assez petit pour que tu puisses suivre une action de bout en
-bout. Commence par une carte : importe-la, révèle sa réponse, renvoie-la en
-fin de file, puis annule ton choix. À chaque étape, essaie de prévoir ce que
-le programme va faire avant de lire la fonction.
+Cette documentation décrit les contrats et les limites du viewer : ce que
+le code garantit, à quel endroit il le garantit et ce qui changerait si le
+produit évoluait. [Expertise et décisions d’ingénierie](jugement-technique.md)
+replace ces choix dans le parcours complet, de la conception à la production.
 
-Pour travailler les choix d’architecture et de mise en ligne, lis aussi
-[l’étude de cas sur le jugement technique](jugement-technique.md).
-
-## 1. Lancer et se repérer
-
-Suis le [démarrage rapide](../README.md#démarrage-rapide), puis importe
-[le paquet fictif](../examples/paquet-fictif.json). Choisis **Non** pour
-retrouver le même ordre pendant les exercices.
+## 1. Carte du code
 
 | Si tu veux comprendre… | Ouvre… | Cherche… |
 | --- | --- | --- |
@@ -77,25 +70,28 @@ que `cards` et `ignored` existent. Dans l’autre, il sait que `message` existe.
 C’est un exemple d’[union discriminée](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) :
 un champ commun, ici `ok`, indique quelles autres propriétés on peut lire.
 
-Teste la différence sans ouvrir le navigateur :
+| Entrée | Résultat observable |
+| --- | --- |
+| Syntaxe JSON invalide | Message de lecture ; le paquet en cours reste intact. |
+| JSON lisible, mais aucune carte valide | Refus ; une valeur peut être du JSON sans respecter le format d’un paquet. |
+| Tableau avec des cartes valides et invalides | Les cartes valides sont gardées, les autres sont comptées. |
+| Nouveau paquet valide pendant une session | Le résultat est proposé. Le remplacement n’est appliqué qu’après confirmation. |
 
-```sh
-node --input-type=module <<'JS'
-import { parseDeck } from "./src/import.ts";
-const result = parseDeck('[{"question":"Q","answer":"R"},{"question":7,"answer":"R"}]');
-console.log(result);
-JS
-```
+La lecture est asynchrone. `main.ts` désactive l’import, le retour à
+l’accueil et le redémarrage pendant `await readDeck(file)`. L’élève peut
+continuer à réviser. À la fin de la lecture, `offerImport` reçoit l’état
+courant ; une erreur ne remet pas la session dans l’état qu’elle avait
+avant la lecture. Le candidat en attente et la session active sont
+deux valeurs distinctes. Le
+[test navigateur de lecture différée](../tests/e2e/viewer.spec.ts)
+force une lecture lente puis un échec de lecture pour vérifier ces limites.
 
-Attendu : `ok: true`, une carte acceptée et `ignored: 1`. Remplace ensuite le
-texte par `'{'` : tu obtiens `ok: false` et un message. Relie ces deux cas au
-[code des tests d’import](../tests/import.test.ts).
-
-Si un paquet est déjà ouvert et que sa session n’est pas terminée,
-`offerImport` renvoie le nouveau paquet comme proposition. `main.ts` affiche
-alors la confirmation ; la session n’est changée qu’après acceptation.
-Pour le voir, mets un point d’arrêt dans le gestionnaire `change`, juste après
-`await readDeck(file)`, puis inspecte `result` et `session` après un import.
+`readDeck` ne demande à son entrée que `size` et `text()`. La dépendance
+au fichier se réduit donc à deux opérations ; un test Node peut produire
+un échec de lecture sans créer de sélecteur de fichiers. Le contrôle de
+taille précède la lecture, mais le fichier admis est lu et parsé en entier.
+Cette limite réduit la taille des entrées ; elle ne fixe pas la mémoire
+totale occupée pendant le parsing.
 
 ## 3. Suivre une carte : séparer le paquet de la file
 
@@ -125,18 +121,32 @@ mutation accidentelle ; il ne gèle pas l’objet en JavaScript. Dans `start`,
 le mélange peut modifier la file sur place, car elle vient d’être créée et
 n’est encore partagée avec aucun état.
 
-Ce choix privilégie la simplicité : un jugement recopie la file restante
-et l’état est ensuite sérialisé. Si un grand paquet devenait lent,
-mesure d’abord le coût de la copie, du rendu et du stockage séparément.
+### Ce que le type garantit, et ce qu’il faut encore démontrer
 
-Le mélange donne un autre exemple : `start` accepte une fonction `random`,
-`Math.random` par défaut. Le test lui passe `() => 0` pour pouvoir prédire
-l’ordre sans changer le comportement du navigateur. Essaie de calculer
-l’ordre obtenu pour quatre cartes, puis vérifie :
+`Queue` est un tableau en lecture seule d’indices. Son type ne garantit
+ni qu’il contient un élément, ni que ses indices pointent vers le paquet.
+Avec `noUncheckedIndexedAccess`, TypeScript le rappelle en considérant
+`queue[0]` comme potentiellement absent. Le `!` dans le code ne fait aucun
+contrôle à l’exécution : il s’appuie sur les chemins qui créent l’état.
 
-```sh
-node --test --test-name-pattern='shuffle uses a permutation' tests/session.test.ts
-```
+- L’import et la restauration n’acceptent pas de paquet vide.
+- `start` construit la file à partir des indices du paquet. Le mélange
+  échange les positions et préserve ces indices.
+- `rate` renvoie `complete` quand la dernière carte est retirée.
+- La restauration rejette les files vides, les indices hors limites et
+  les doublons d’indices. Deux cartes au texte identique peuvent en
+  revanche être deux entrées distinctes du paquet.
+
+Ces garanties concernent les chemins utilisés par le viewer. Le type
+`Session` seul ne rend pas impossible de fabriquer un état invalide
+dans un autre appelant. Si le modèle est réutilisé ailleurs, il faudra
+préserver ces points de création ou rendre certains états plus difficiles
+à construire, par exemple avec un type de file non vide.
+
+L’ordre aléatoire est une dépendance de `start`. Le navigateur utilise
+`Math.random` par défaut ; les [tests de session](../tests/session.test.ts)
+fournissent une fonction connue pour vérifier une permutation précise.
+Le test porte sur l’ordre produit et la préservation du paquet source.
 
 ## 4. Où placer la logique et les effets ?
 
@@ -160,51 +170,28 @@ Deux frontières à garder en tête quand tu modifies le code :
   fonctions de lecture ou d’écriture : les tests peuvent simuler un quota
   plein ou un accès bloqué sans manipuler le navigateur.
 
-Le viewer utilise directement le DOM : il a une page et un seul état
-principal. Si la partie cartes rejoint une application avec plusieurs écrans
-et des composants partagés, une autre couche d’interface pourra être utile.
-Les règles d’import et de révision sont déjà séparées pour pouvoir les
-réutiliser sans reprendre le rendu actuel.
+Le viewer utilise directement le DOM : une page et un seul état principal.
+`render` remplace l’arbre de la vue. Le gestionnaire de clic reste sur son
+conteneur et reconnaît la commande avec `data-action` ; les nouveaux boutons
+n’ont pas besoin de chacun réinstaller un gestionnaire. Comme un élément
+remplacé peut perdre le focus, l’interface donne ensuite le focus à la
+réponse ou au prochain contrôle selon l’action. Les tests clavier couvrent
+ce passage. Si le viewer rejoint une application avec plusieurs écrans et
+des composants partagés, la logique d’import et de révision peut être
+réutilisée sans reprendre ce rendu.
 
-## 5. Trois exercices à faire soi-même
+### Coût d’une interaction
 
-Fais-les sur une branche locale d’exercice. Avant de toucher au code,
-écris ce que tu t’attends à voir et le test qui te ferait changer d’avis.
+Un jugement recopie la file restante. À chaque transition sauvegardée,
+`setSession` sérialise aussi tout l’état, paquet compris, puis appelle
+`sessionStorage.setItem` avant de rendre la vue. La taille de la file
+explique le coût de sa copie ; la taille du paquet explique une partie
+du coût de la sérialisation et du stockage. Optimiser la file seule ne
+résoudrait donc pas forcément un ralentissement. Le code privilégie un
+instantané simple à restaurer. Aucun seuil de performance sur un appareil
+réel n’a été établi par les tests actuels.
 
-1. **Faire échouer le vérificateur de types.** Dans `rate`, enlève
-   temporairement le `!` après `session.queue[0]` et lance `npm run typecheck`.
-   Avec `noUncheckedIndexedAccess`, TypeScript considère que lire un indice
-   peut renvoyer `undefined`. Le `!` ne vérifie rien à l’exécution. Retrouve
-   ce qui garantit une file non vide en pratique : création depuis un paquet
-   validé, transition vers `complete` après la dernière carte et validation
-   des files restaurées. Remets ensuite le `!` et refais la vérification.
-2. **Distinguer une modification voulue d’une régression.** Change
-   temporairement la phrase d’accueil dans `render`. Observe le résultat
-   dans `npm run dev`, puis lance la commande ci-dessous. Le test doit
-   échouer sur le texte attendu. Remets le texte initial pour le faire
-   repasser. Pour un vrai changement de texte, on met à jour l’attente du
-   test une fois le nouveau texte décidé.
-3. **Concevoir un compteur « Trouvées ».** Commence par définir ce qu’il
-   compte. Si c’est le nombre de cartes retirées, il doit rester à zéro quand
-   tu choisis **À revoir**, passer à un après **J’ai trouvé** et redescendre
-   après **Annuler**. Essaie de le calculer à partir de `cards.length` et
-   `queue.length` dans `render`. Est-ce qu’une nouvelle valeur dans la
-   session ou dans la sauvegarde t’apporterait quelque chose ?
-
-Commande ciblée pour l’exercice 2 (avec Google Chrome installé) :
-
-```sh
-npm run test:e2e -- --project=desktop -g 'full review'
-```
-
-Pour reprendre le projet plus tard, prends un comportement à la fois :
-**prédis le résultat → trouve la fonction responsable → vérifie un cas normal
-et un cas limite → explique le choix que tu garderais.** Par exemple, si tu
-peux expliquer pourquoi on valide un `unknown` à l’entrée mais qu’on n’a pas
-besoin de revalider le type de chaque carte au moment de l’afficher, tu as
-compris une décision que tu pourras réutiliser dans un autre projet.
-
-## 6. Référence : format, données et progression
+## 5. Référence : format, données et progression
 
 Un fichier correspond à un paquet. À la racine, le JSON contient un tableau
 d’objets avec deux champs texte non vides :
@@ -238,7 +225,15 @@ la révision continue en mémoire. Une visite indépendante démarre à zéro.
 Une duplication d’onglet peut copier la session selon le navigateur ;
 il n’y a pas de reprise garantie après fermeture ni sur un autre appareil.
 
-## 7. Vérifier et publier
+La sauvegarde contient une version et un état. `decodeSession` exige la
+version 1 et revérifie les cartes et les files. Un format incompatible est
+signalé puis écarté ; il n’y a pas de migration. La limite d’import ne
+garantit pas que le navigateur aura assez de place pour stocker l’état
+complet. Si une écriture échoue, l’état en mémoire continue d’avancer ;
+une actualisation peut retrouver le dernier instantané réussi au lieu
+de retrouver le dernier geste.
+
+## 6. Vérifier et publier
 
 | Commande | Ce qu’elle vérifie ou produit |
 | --- | --- |
