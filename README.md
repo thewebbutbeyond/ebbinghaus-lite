@@ -107,3 +107,10 @@ Le logo Brain et les icônes proviennent de Lucide 0.575.0 (licence dans
 `public/LUCIDE-LICENSE.txt`). La marque et les couleurs sont copiées localement
 depuis l’application Ebbinghaus ; le viewer n’en dépend pas à l’exécution.
 Le viewer n’inclut ni génération de cartes ni répétition espacée.
+
+## Publication
+
+Dans **Settings → Pages**, la source est **GitHub Actions**. Pour publier une
+version, lancer **Publier le viewer** depuis l’onglet **Actions** sur `main`.
+Le workflow exécute les tests, compile le site et publie uniquement `dist/`.
+Les paquets des élèves et les documents de cours restent en dehors du dépôt.
