@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Un lecteur de cartes Ebbinghaus." />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src data:; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./src/style.css" />
+    <title>Ebbinghaus Viewer</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Aller aux cartes</a>
+    <div class="page">
+      <header class="header">
+        <button class="brand" id="home-button" type="button" aria-label="ebbinghaus — Revenir à l’accueil">
+          <span class="brand-mark" id="brand-icon" aria-hidden="true"></span>
+          <span class="brand-name">ebbinghaus</span>
+        </button>
+        <button class="button button-small button-outline" id="import-button" type="button" hidden><span class="action-label">Importer un paquet</span></button>
+      </header>
+      <main id="main" tabindex="-1">
+        <div id="notice" class="notice" role="status" aria-live="polite" aria-atomic="true"></div>
+        <div id="view"></div>
+        <p id="storage-note" class="storage-note" role="status" hidden></p>
+      </main>
+    </div>
+    <input id="file-input" type="file" accept=".json,application/json" aria-label="Choisir un fichier JSON de cartes" hidden />
+    <dialog id="replace-dialog" aria-labelledby="replace-title" aria-describedby="replace-description replace-summary">
+      <h2 id="replace-title">Remplacer le paquet ?</h2>
+      <p id="replace-description">Ta progression dans le paquet en cours sera perdue.</p>
+      <p id="replace-summary" class="dialog-summary"></p>
+      <div class="dialog-actions">
+        <button id="cancel-replace" class="button button-outline" type="button" autofocus>Annuler</button>
+        <button id="confirm-replace" class="button button-primary" type="button">Remplacer</button>
+      </div>
+    </dialog>
+    <dialog id="home-dialog" aria-labelledby="home-title" aria-describedby="home-description">
+      <h2 id="home-title">Revenir à l’accueil ?</h2>
+      <p id="home-description">Ta progression dans ce paquet sera perdue.</p>
+      <div class="dialog-actions">
+        <button id="cancel-home" class="button button-outline" type="button" autofocus>Rester</button>
+        <button id="confirm-home" class="button button-primary" type="button">Revenir à l’accueil</button>
+      </div>
+    </dialog>
+    <dialog id="restart-dialog" aria-labelledby="restart-title" aria-describedby="restart-description">
+      <h2 id="restart-title">Recommencer le paquet ?</h2>
+      <p id="restart-description">Tu vas reprendre toutes les cartes depuis le début. Ta progression dans ce paquet sera réinitialisée.</p>
+      <div class="dialog-actions">
+        <button id="cancel-restart" class="button button-outline" type="button" autofocus>Annuler</button>
+        <button id="confirm-restart" class="button button-primary" type="button">Recommencer</button>
+      </div>
+    </dialog>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

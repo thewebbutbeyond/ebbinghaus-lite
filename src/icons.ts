@@ -1,0 +1,34 @@
+// Lucide 0.575.0, the same version as the original app. See public/LUCIDE-LICENSE.txt.
+const paths = {
+  brain: [
+    "M12 18V5",
+    "M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4",
+    "M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5",
+    "M17.997 5.125a4 4 0 0 1 2.526 5.77",
+    "M18 18a4 4 0 0 0 2-7.464",
+    "M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517",
+    "M6 18a4 4 0 0 1-2-7.464",
+    "M6.003 5.125a4 4 0 0 0-2.526 5.77",
+  ],
+  upload: ["M12 3v12", "m17 8-5-5-5 5", "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"],
+  home: ["M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", "M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"],
+  restart: ["M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", "M3 3v5h5"],
+  undo: ["M9 14 4 9l5-5", "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"],
+} as const;
+
+export type IconName = keyof typeof paths;
+
+export function icon(name: IconName): SVGSVGElement {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  for (const [attribute, value] of Object.entries({
+    class: "icon", width: "16", height: "16", viewBox: "0 0 24 24", fill: "none",
+    stroke: "currentColor", "stroke-width": name === "brain" ? "2.2" : "2",
+    "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true", focusable: "false",
+  })) svg.setAttribute(attribute, value);
+  for (const d of paths[name]) {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    svg.append(path);
+  }
+  return svg;
+}
