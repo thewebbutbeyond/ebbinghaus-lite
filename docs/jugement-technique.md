@@ -1,146 +1,152 @@
-# Du code qui marche à une version qu’on peut exploiter
+# Expertise, expérience et décisions d’ingénierie
 
-Le viewer doit permettre à un élève d’ouvrir un lien et de réviser un fichier
-reçu à part. Le premier enjeu est de livrer ce parcours simplement. Le
-deuxième est de savoir ce qu’on a livré, comment le vérifier et quoi faire
-s’il casse. C’est un bon terrain pour exercer son jugement d’ingénieur.
+Ebbinghaus Viewer ouvre un paquet JSON et le fait réviser dans le navigateur.
+Sa petite taille permet de suivre une décision depuis le besoin de l’élève
+jusqu’aux fichiers servis en production. Cette note expose les connaissances
+qu’il fallait mobiliser pour le concevoir et les limites des preuves dont
+on dispose. Le [guide du code](guide-technique.md) détaille l’implémentation.
 
-## Junior, intermédiaire, senior : qu’est-ce qui change ?
+## Ce que recouvre « senior »
 
-Les titres varient selon les équipes. Le repère utile ici est la portée
-du problème pris en charge, le degré d’autonomie et l’aide apportée aux autres.
-Le [référentiel public de GitLab](https://handbook.gitlab.com/handbook/engineering/careers/matrix/)
-est un exemple de grille, pas une définition universelle.
+Trois choses peuvent progresser à des rythmes différents :
 
-| Niveau | Sur ce viewer | Preuve attendue |
+- **Les connaissances** : comprendre le modèle d’un langage, le protocole
+  HTTP ou la différence entre un build et un déploiement. On peut les
+  acquérir par l’étude, la veille et la lecture de systèmes existants.
+- **L’expérience** : avoir livré, investigué ou maintenu quelque chose avec
+  de vraies contraintes. On peut avoir de l’expérience dans la livraison
+  de produits et peu d’expérience des incidents en production, ou l’inverse.
+- **Le niveau de responsabilité** : être capable de prendre en charge un
+  problème mal défini, prendre des décisions avec les autres, rendre leurs
+  conséquences vérifiables et rester responsable du résultat.
+
+Dans le sens fort, **l’expertise** est la capacité à mobiliser des
+connaissances spécialisées pour expliquer, prédire et diagnostiquer dans
+un domaine. Connaître les mécanismes de GitHub Pages est possible sans
+avoir maintenu un site public. Les avoir étudiés donne de bonnes hypothèses
+le jour d’une panne ; les avoir déjà appliqués sous contrainte donne
+d’autres repères. Le nombre d’années ne dit ni quels problèmes une
+personne a traités, ni jusqu’où elle les comprend.
+
+Les référentiels de rôle donnent une autre vue. [SFIA](https://sfia-online.org/en/sfia-9/responsibilities)
+décrit des niveaux par l’autonomie, la complexité, l’influence et la
+responsabilité. Pour un [senior backend chez GitLab](https://handbook.gitlab.com/job-description-library/engineering/development/backend/senior/#senior-responsibilities),
+la fiche ajoute notamment l’amélioration de la qualité à l’échelle de
+l’équipe, l’autonomie sur des livraisons et le mentorat. C’est un exemple
+de rôle, pas un barème universel ni un niveau d’expertise dans chaque
+technologie.
+
+Sur une même publication, un **junior** peut exécuter et vérifier une
+procédure avec un cadre donné ; un **intermédiaire** peut prendre en charge
+la publication et diagnostiquer pourquoi elle échoue ; un **senior** doit
+aussi décider ce qui suffit à rendre la mise en ligne acceptable, coordonner
+ceux qui en dépendent et prévoir comment rétablir le service. Ces capacités
+se chevauchent. Le dernier rôle englobe le diagnostic et l’exécution quand
+ils sont nécessaires.
+
+## Ce que les experts reconnaissent derrière les symptômes
+
+[Baltes et Diehl](https://arxiv.org/abs/1807.06087) ont proposé une théorie
+de l’expertise en développement à partir d’une enquête auprès de
+335 développeurs et de travaux antérieurs. Leurs résultats invitent à
+préciser la tâche et le contexte, et à distinguer expérience et expertise
+autoévaluée. Une étude de [Chi, Feltovich et Glaser](https://doi.org/10.1207/s15516709cog0502_2),
+en physique, a montré que les experts de l’étude regroupaient les
+problèmes selon les principes en jeu là où les novices se fiaient davantage
+aux éléments visibles. L’analogie avec le logiciel est utile : plusieurs
+pannes qui se présentent de la même façon peuvent relever de mécanismes
+différents. L’étude ne porte pas sur les développeurs.
+
+| Domaine | Ce que donne un modèle solide | Exemple concret |
 | --- | --- | --- |
-| Junior | Suit les instructions, lance le viewer et corrige un problème ciblé. Si un fichier ne s’importe pas, il relève l’entrée et le message exacts avant de demander de l’aide. | Reproduction claire et résultat vérifié sur un exemple. |
-| Intermédiaire | Prend en charge la publication. Il distingue le serveur de dev du site compilé et sait remonter d’une erreur dans le navigateur à la configuration ou au code. | Tests, journal du déploiement et essai du parcours complet sur l’URL publique. |
-| Senior | Décide avec l’équipe de ce qu’il faut vérifier avant de publier, selon le risque pour l’élève. Il sait quand un site statique suffit, prépare le retour arrière et rend la procédure transmissible. | Raisons du choix, limites reconnues et procédure qu’une autre personne peut reprendre. |
+| **Python** | Distinguer identité, valeur, mutation, annotations, règles du langage et détails de l’interpréteur. Savoir quand une opération bloque l’exécution. | `ancienne = file` partage la liste ; la modifier change ce que voit `ancienne`. Copier la liste sépare les conteneurs, pas les objets qu’ils contiennent. Une annotation `list[int]` ne valide pas le JSON reçu. Un appel bloquant dans une coroutine peut bloquer la boucle d’événements. [Modèle de données](https://docs.python.org/3/reference/datamodel.html#objects-values-and-types), [annotations](https://docs.python.org/3/library/typing.html), [asyncio](https://docs.python.org/3/library/asyncio-dev.html#running-blocking-code). |
+| **Full stack** | Suivre une action à travers le navigateur, HTTP, le serveur et éventuellement la base. Savoir à quelle frontière chaque garantie doit être imposée. | Désactiver un bouton peut protéger l’interface d’un double clic ; si une API existe, le serveur doit encore vérifier le droit d’effectuer l’action. Dans ce viewer, un HTML en `200` ne prouve ni que le JavaScript a chargé, ni qu’un fichier s’importe. |
+| **Informatique** | Distinguer une propriété du modèle, les hypothèses qui la rendent vraie et les limites d’une mesure. Les domaines vont des algorithmes aux langages, systèmes et réseaux. | Le mélange du viewer préserve les indices parce qu’il ne fait que des échanges. La préservation ne prouve pas une distribution uniforme : c’est une autre propriété, qui dépend notamment de la manière dont les positions sont tirées. [Domaines de CS2023 (ACM, IEEE-CS, AAAI)](https://csed.acm.org/knowledge-areas/). |
 
-Un senior doit aussi savoir faire le diagnostic de l’intermédiaire et lire
-le code du junior. Il apporte en plus la capacité de cadrer une situation
-ambiguë. Si les élèves utilisent surtout Safari sur iPhone, par exemple,
-un test dans Chrome à largeur mobile reste utile, mais ne vérifie ni Safari
-ni le sélecteur de fichiers d’un vrai téléphone. Teste alors le parcours sur
-un iPhone avant d’ajouter des tests sur la même émulation.
+Une personne peut être experte en exécution Python et débutante en mise
+en ligne. Un senior full stack n’a pas besoin de connaître tous les
+détails de CPython. Il doit reconnaître quand ils importent, savoir trouver
+une source fiable et identifier ce qui manque pour décider.
 
-## Vite : à quel problème répond-il ?
+## Les connaissances nécessaires pour refaire ce viewer
 
-[Vite](https://vite.dev/guide/why.html) fournit un serveur de développement
-et un outil de construction pour le Web. Un framework d’interface fournit
-une façon d’organiser le rendu, les composants ou l’état. Ici, l’interface
-est écrite avec le DOM dans [`src/main.ts`](../src/main.ts) ; Vite n’impose
-aucun modèle de composants.
+| Décision | Ce qu’il fallait comprendre | Pourquoi ce choix ici |
+| --- | --- | --- |
+| Traiter le paquet côté navigateur | Sélecteur de fichiers, lecture asynchrone, différence entre afficher du texte et interpréter du HTML. | Les paquets restent sur l’appareil. Un serveur qui les reçoit ajouterait une responsabilité sans répondre au besoin. |
+| Employer TypeScript | Un type décrit ce que le code peut supposer ; il ne transforme pas une entrée externe en donnée valide. Les unions peuvent exprimer des états qui n’ont pas les mêmes propriétés. | L’interface, la logique et la restauration s’accordent sur le modèle. Les entrées du fichier et du stockage restent vérifiées à l’exécution. |
+| Séparer paquet et file d’indices | Références, copies, transitions d’état et coût de mise à jour. | On conserve l’ordre source pour redémarrer et une seule file précédente pour annuler. Copier la file est simple, mais le travail augmente avec sa longueur. |
+| Sauvegarder dans l’onglet | Portée du stockage du navigateur, sérialisation, quotas et compatibilité des données écrites. | La progression peut survivre à l’actualisation. Il n’y a ni synchronisation, ni migration d’une version incompatible. Une écriture qui échoue ne doit pas bloquer la révision. |
+| Rendre avec le DOM | Événements, focus, éléments accessibles et reconstruction de la vue. | Une page et un seul état suffisent aujourd’hui. Une bibliothèque d’interface se discuterait si le viewer devait partager de nombreux composants avec une application plus grande. |
+| Publier un site statique | Modules du navigateur, transformation du code, résolution des URL et distinction entre révision du code et résultat du build. | Vite produit le site. Pages sert les fichiers. Un service qui exécute du code par requête n’est utile que si le produit a des besoins côté serveur. |
 
-| Moment | Ce qui se passe dans ce projet |
+La production du code et ces décisions sont deux activités différentes.
+Une IA peut écrire une fonction ; celui qui reprend le projet doit
+pouvoir dire sur quelles hypothèses elle repose, ce qu’un test démontre
+et ce qu’il faudrait changer si le besoin évoluait. La documentation
+transmet ce raisonnement et les observations du projet. Elle ne remplace
+pas l’expérience d’une livraison ou d’un incident pris en charge.
+
+## Vite : du code source au site servi
+
+[Vite](https://vite.dev/guide/why.html) est un outil de développement et
+de construction. Il intervient dans la façon de servir et de transformer
+le code ; l’organisation du rendu reste dans
+[`src/main.ts`](../src/main.ts), qui utilise le DOM.
+
+| Moment | Contrat dans ce projet |
 | --- | --- |
-| `npm run dev` | Vite sert le [`index.html`](../index.html) source et transforme les modules TypeScript quand le navigateur les demande. Le navigateur reçoit du JavaScript. |
-| `npm run build` | Le script lance d’abord `tsc --noEmit`. Ensuite Vite part de l’HTML d’entrée et produit un site statique dans `dist/` : HTML, JavaScript et CSS prêts à servir. |
-| GitHub Pages | L’hébergeur sert ces fichiers à l’adresse publique. Vite et Node ont travaillé en amont ; le navigateur n’a besoin d’aucun serveur Vite ou Node pour réviser. |
+| `npm run dev` | Le serveur Vite sert [`index.html`](../index.html) et transforme à la demande les modules TypeScript que le navigateur charge. |
+| `npm run build` | Le script vérifie les types avec `tsc --noEmit`, puis Vite part de l’HTML d’entrée et produit `dist/`. [Vite ne vérifie pas lui-même les types](https://vite.dev/guide/features.html#typescript). |
+| GitHub Pages | L’hébergeur répond avec les fichiers générés. Vite et Node ne tournent pas pour chaque visite. |
 
-Tu peux le voir : dans `index.html`, le script d’entrée pointe vers
-`./src/main.ts`. Dans `dist/index.html`, il pointe vers un fichier
-`./assets/index-….js`. Ce sont deux façons de livrer le même programme,
-avec des priorités différentes : voir un changement vite en développement,
-servir le résultat compilé en production. Le contrôle TypeScript est une
-étape séparée, car [la transformation de Vite ne vérifie pas les types](https://vite.dev/guide/features.html#typescript).
+Le même besoin pourrait être couvert avec du JavaScript natif servi par
+un hébergeur statique, sans Vite. Ici, Vite fournit une boucle de développement
+et une construction cohérentes pour TypeScript et les chemins des
+ressources. En échange, il faut maintenir une dépendance de développement,
+un environnement Node et une configuration. Ajouter React modifierait
+l’organisation de l’interface ; cela ne corrigerait pas un chemin d’asset.
 
-**Pourquoi cette solution ?** Pour une page en HTML, CSS et JavaScript
-avec peu de modules, on pourrait servir les fichiers sources directement.
-Ici, on voulait garder TypeScript, avoir un lancement local simple et
-pouvoir publier un dossier statique. Vite évite de monter soi-même cette
-chaîne ; en échange, on entretient une dépendance de construction et
-une configuration. Ajouter une bibliothèque d’interface ne résoudrait
-pas un problème d’adresse des fichiers. Elle se discuterait si le viewer
-devait partager des composants et des conventions avec une application plus
-grande.
+**Cas vérifié :** deux compilations du même code ont été servies sous un
+sous-dossier. Les deux répondaient `200` pour l’HTML. Avec une base absolue
+`/`, le navigateur demandait `/assets/…` à la racine et obtenait des
+`404` pour le JavaScript et le CSS. Avec
+[`base: "./"`](../vite.config.ts), le navigateur les demandait dans le
+dossier de la page et les deux répondaient `200`. C’est la différence
+entre une réponse HTTP valide pour un document et une application
+utilisable. Une base relative convient à cette page unique. Des routes
+profondes ou un point d’entrée différent imposeraient de vérifier à
+nouveau la résolution. [Chemins de base dans Vite](https://vite.dev/guide/build.html#public-base-path),
+[sémantique du statut HTTP 200](https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok).
 
-### Un diagnostic qu’on peut reproduire
+## Déploiement : garanties, preuves et retour arrière
 
-Imagine que l’HTML répond sur `/ebbinghaus-viewer/` mais que les boutons
-n’agissent pas. Dans **Réseau**, regarde l’adresse demandée pour le
-JavaScript. `/assets/index-….js` vise la racine du domaine.
-`./assets/index-….js` vise le dossier de la page. Le réglage
-[`base: "./"`](../vite.config.ts) demande à Vite de générer des chemins
-relatifs. C’est adapté à ce viewer à une seule page, qui doit fonctionner
-sous le nom du dépôt. Si on ajoute des routes comme `/paquets/mon-paquet/`,
-il faudra revoir le choix et tester un accès direct à ces routes.
-[Documentation Vite sur le chemin de base](https://vite.dev/guide/build.html#public-base-path).
+[Le workflow](../.github/workflows/pages.yml) se lance manuellement sur
+`main`. Le job de build installe les dépendances verrouillées avec
+`npm ci`, lance les tests unitaires, vérifie les types pendant la
+construction et transmet `dist/`. Le job de publication déploie ce
+résultat de **la même exécution**. Les droits de publication sont
+accordés à ce second job. Les tests Playwright existent ; le workflow
+ne les lance pas. [Documentation GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
-Reproduis le cas en local avec Python 3, depuis la racine du projet :
+| Ce qu’on sait | D’où vient la preuve | Ce que la preuve ne couvre pas |
+| --- | --- | --- |
+| Le commit prévu a été construit et publié. | Journal [Actions de la v1.0.0](https://github.com/thewebbutbeyond/ebbinghaus-viewer/actions/runs/41969711538). | Le parcours de révision dans le navigateur de l’élève. |
+| Le viewer public a chargé et révisé le paquet fictif jusqu’au bout. | Essai sur l’URL publique, dans un Chrome isolé à taille mobile. | Safari sur un iPhone réel, le sélecteur du téléphone ou le comportement avec tous les fichiers possibles. |
+| Une lecture différée, un fichier hostile ou un stockage bloqué ont un comportement attendu. | [Tests Playwright](../tests/e2e/viewer.spec.ts) dans des conditions contrôlées. | La fréquence de ces cas chez les élèves et les performances sur leurs appareils. |
 
-```sh
-dossier="$(mktemp -d)"
-npm run build -- --outDir "$dossier/relatif/ebbinghaus-viewer"
-npm run build -- --base=/ --outDir "$dossier/absolu/ebbinghaus-viewer"
-python3 -m http.server 4180 --bind 127.0.0.1 --directory "$dossier"
-```
+Le journal du workflow explique les étapes internes. L’essai public répond
+à une autre question : le service est-il utilisable du point de vue de
+l’élève ? C’est l’idée d’une vérification de l’extérieur décrite dans
+[le livre SRE de Google](https://sre.google/sre-book/monitoring-distributed-systems/).
+Ici, l’essai est ponctuel. Le viewer ne mesure pas automatiquement les
+échecs d’import en production.
 
-Ouvre [la version relative](http://127.0.0.1:4180/relatif/ebbinghaus-viewer/)
-et [la version absolue](http://127.0.0.1:4180/absolu/ebbinghaus-viewer/).
-Les deux pages HTML répondent. La première charge ses fichiers ; la seconde
-cherche les siens à la racine et obtient des 404. Vérifie-le dans **Réseau**,
-puis arrête le serveur avec Ctrl+C. Tu viens d’isoler une panne d’hébergement
-sans modifier le code de la session ni déployer quoi que ce soit.
-
-## Déploiement : à quoi peut-on vraiment faire confiance ?
-
-Le choix de [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
-suit le besoin : une adresse publique, des fichiers statiques et aucun
-paquet de cours à stocker sur le serveur. GitHub sert le viewer ; l’élève
-ouvre son fichier dans le navigateur. Ce choix serait à réexaminer si
-l’application devait partager des sessions entre appareils ou gérer des
-accès aux paquets côté serveur.
-
-Le [workflow actuel](../.github/workflows/pages.yml) se lance manuellement
-sur `main`. Il installe les dépendances à partir du fichier de verrouillage
-avec `npm ci`, exécute les tests unitaires, vérifie les types pendant la
-construction, puis transmet `dist/` à l’étape de publication. Cette étape
-déploie le résultat du build de **la même exécution**. Elle reçoit les
-droits de publication ; le job qui construit le site ne les a pas.
-Les tests Playwright existent, mais le workflow ne les lance pas.
-
-Avant de partager le lien, distingue les preuves :
-
-| Ce que tu veux savoir | Ce que tu regardes |
-| --- | --- |
-| Est-ce que la version attendue a été construite ? | Le commit indiqué dans le journal Actions et le résultat du job de build. |
-| Est-ce que le navigateur peut charger le site ? | La réponse à l’URL publique **et** les requêtes vers le JavaScript et le CSS. Un HTML en 200 ne suffit pas. |
-| Est-ce que l’élève peut réviser ? | Dans un onglet neuf, importer le paquet fictif, révéler une réponse, tester **À revoir**, puis terminer le paquet. Faire aussi le parcours sur l’appareil réel si c’est lui qu’on veut valider. |
-
-La [publication de la v1.0.0](https://github.com/thewebbutbeyond/ebbinghaus-viewer/actions/runs/41969711538)
-est un exemple de journal à lire. Elle te dit ce qui a été construit et
-déployé. Elle ne te dit pas ce que voit un élève qui importe son premier fichier.
-
-**Si une version casse :** note le symptôme, l’URL et le commit servi ou
-le dernier déploiement connu. Si les fichiers chargent mais que l’import
-échoue, garde un fichier fictif minimal qui reproduit le problème. Si la
-panne vient d’un changement récent sur `main`, prépare un correctif ou une
-annulation de ce changement, vérifie-le, publie-le depuis `main` et reporte-le
-sur `develop`. Refais ensuite le test public. Une fois le problème isolé,
-la décision utile est celle qui rétablit le parcours avec le moins de risque.
-
-Le tag `v1.0.0` identifie le code source. Il ne constitue pas une sauvegarde
-garantie des fichiers déployés : reconstruire plus tard avec `ubuntu-latest`
-et Node `24` peut utiliser un environnement différent. Pour ce viewer, un
-retour arrière par correctif ou annulation puis reconstruction est une
-procédure proportionnée. Si un jour il faut rétablir **exactement** les
-fichiers précédents dans un délai garanti, il faudra conserver le résultat
-du build et éprouver la procédure qui le redéploie.
-
-## S’entraîner au jugement
-
-Fais l’exercice des deux chemins, puis écris cinq lignes :
-
-1. **Symptôme :** qu’est-ce que l’élève voit ?
-2. **Hypothèse :** à quelle étape ça casse ?
-3. **Preuve :** quel test distingue cette cause des autres ?
-4. **Choix :** quel changement suffit ici, et pourquoi ?
-5. **Limite :** quelle nouvelle contrainte te ferait changer de solution ?
-
-L’expérience, c’est avoir rencontré assez de situations pour reconnaître
-des symptômes. L’expertise, c’est pouvoir expliquer la cause, vérifier son
-hypothèse et transférer le raisonnement à un autre projet. Ici, l’idée à
-emporter est que l’application, les fichiers construits et le chemin auquel
-on les sert sont trois choses qu’on peut examiner séparément.
+Si une mise en ligne dégrade le parcours, un correctif ou un revert doit
+passer par `main`, puis le workflow doit être relancé et le résultat vérifié
+sur l’URL publique. La correction revient ensuite dans `develop`.
+Le tag `v1.0.0` identifie un état des sources ; il ne constitue pas une
+copie des fichiers déployés. Avec `ubuntu-latest` et Node `24`, reconstruire
+plus tard peut utiliser un environnement différent, même avec le fichier
+de verrouillage et des actions épinglées. Si un jour le service exige un
+retour **au même artefact** dans un délai donné, il faudra conserver cet
+artefact et vérifier la procédure qui le remet en ligne.

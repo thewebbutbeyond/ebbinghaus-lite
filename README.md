@@ -25,7 +25,7 @@ fais Ctrl+C.
 
 ## Documentation
 
-Le [guide technique](docs/guide-technique.md) explique pourquoi le projet
-utilise TypeScript, comment une carte passe du fichier à l’écran, et comment
-lire et modifier le code à l’aide des tests. Il contient aussi le format des
-paquets et les commandes de publication.
+Le [guide technique](docs/guide-technique.md) décrit l’architecture, les choix
+de langage, le format des paquets et les garanties du code. La page
+[Expertise et décisions d’ingénierie](docs/jugement-technique.md) explique
+les connaissances derrière ces choix et le fonctionnement du déploiement.
