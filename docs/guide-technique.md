@@ -5,6 +5,9 @@ bout. Commence par une carte : importe-la, révèle sa réponse, renvoie-la en
 fin de file, puis annule ton choix. À chaque étape, essaie de prévoir ce que
 le programme va faire avant de lire la fonction.
 
+Pour travailler les choix d’architecture et de mise en ligne, lis aussi
+[l’étude de cas sur le jugement technique](jugement-technique.md).
+
 ## 1. Lancer et se repérer
 
 Suis le [démarrage rapide](../README.md#démarrage-rapide), puis importe
