@@ -97,11 +97,11 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
   await expect(page.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
   await expect(page.getByText(/^Dernière mise à jour :/)).toBeVisible();
   await expect(page.getByText(/fichier daté|examen à confirmer|révision complète/i)).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Ouvrir — Introduction à la cybersécurité", exact: true }))
+  await expect(page.getByRole("link", { name: "Ouvrir — Introduction à la cybersécurité · Flashcards", exact: true }))
     .toHaveAttribute("href", /\/paquets\/revision-complete$/);
-  await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Juin 2025 · Série A" }))
+  await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Examen · juin 2025 · Série A" }))
     .toHaveAttribute("href", /Corrige-Examen-2025-06-13\.pdf$/);
-  await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Janvier 2026 · Série A" }))
+  await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Examen · janvier 2026 · Série A" }))
     .toHaveAttribute("href", /Corrige-Examen-2026-01-23-a\.pdf$/);
   await page.getByRole("link", { name: /^ebbinghaus lite/ }).click();
   await expect(heading).toHaveText("Révise tes cours");
