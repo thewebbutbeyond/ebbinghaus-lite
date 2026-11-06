@@ -23,7 +23,26 @@ npm run dev
 Ouvre [le viewer local](http://127.0.0.1:5173). Pour arrêter le serveur,
 fais Ctrl+C.
 
+## Portail de cours local
+
+Le portail donne à chaque élève accès aux flashcards, fiches méthode et
+corrigés de ses cours. Pour l’essayer avec deux comptes et des documents fictifs :
+
+```sh
+npm ci
+npm run portal:demo
+npm run build:portal
+npm run portal:start
+```
+
+Ouvre [Mes cours](http://127.0.0.1:4176/portal/) et utilise un des mots de passe
+affichés par la commande de démonstration. [L’import JSON](http://127.0.0.1:4176/)
+reste accessible sans compte.
+
 ## Documentation
+
+Le [guide du portail](docs/portail-local.md) explique comment attribuer un cours,
+publier des fichiers et vérifier le parcours élève.
 
 Le [guide technique](docs/guide-technique.md) décrit l’architecture, les choix
 de langage, le format des paquets et les garanties du code. La page

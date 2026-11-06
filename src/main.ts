@@ -1,7 +1,8 @@
 import { readDeck } from "./import.ts";
-import { acceptImport, offerImport, rate, restart, reveal, start, undo, type Candidate, type Session } from "./session.ts";
+import { acceptImport, offerImport, restart, type Candidate, type Session } from "./session.ts";
 import { restoreSession, saveSession, STORAGE_KEY } from "./storage.ts";
-import { icon, type IconName } from "./icons.ts";
+import { icon } from "./icons.ts";
+import { action, countLabel, el, renderReview, reviewAction } from "./review-view.ts";
 
 function required<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id);
@@ -23,26 +24,6 @@ let session: Session = restored.session;
 let pending: Candidate | null = null;
 let reading = false;
 let importTrigger: HTMLButtonElement | null = null;
-
-function el<K extends keyof HTMLElementTagNameMap>(tag: K, className = "", text?: string): HTMLElementTagNameMap[K] {
-  const element = document.createElement(tag);
-  element.className = className;
-  if (text !== undefined) element.textContent = text;
-  return element;
-}
-
-function action(label: string, name: string, style = "button-outline", symbol?: IconName): HTMLButtonElement {
-  const button = el("button", `button ${style}`);
-  button.type = "button";
-  button.dataset.action = name;
-  if (symbol) button.append(icon(symbol));
-  if (label) button.append(el("span", "action-label", label));
-  return button;
-}
-
-function countLabel(count: number): string {
-  return `${count} carte${count === 1 ? "" : "s"}`;
-}
 
 function importedMessage(candidate: Candidate): string {
   return candidate.ignored > 0
@@ -69,74 +50,15 @@ function setSession(next: Session, focus?: string): void {
   render(focus);
 }
 
-function deckHeading(): HTMLElement {
-  const heading = el("div", "deck-heading");
-  if (session.kind === "empty") return heading;
-  heading.append(el("p", "filename", session.name));
-  return heading;
-}
-
 function render(focus?: string): void {
   importButton.hidden = session.kind === "empty" || session.kind === "complete";
-  const section = el("section", `screen screen-${session.kind}`);
+  let section: HTMLElement;
   if (session.kind === "empty") {
+    section = el("section", "screen screen-empty");
     section.append(el("h1", "home-title", "Ebbinghaus Viewer"),
       el("p", "home-intro", "Importe tes flashcards pour les réviser."),
       action("Importer tes cartes", "import", "button-primary", "upload"));
-  } else if (session.kind === "ready") {
-    const panel = el("div", "panel ready-panel");
-    panel.append(el("h1", "filename", session.name), el("p", "card-count", countLabel(session.cards.length)));
-    panel.append(el("p", "shuffle-question", "Veux-tu mélanger ton paquet ?"));
-    const buttons = el("div", "choice-actions");
-    buttons.append(action("Oui", "shuffle", "button-primary"), action("Non", "ordered"));
-    panel.append(buttons);
-    section.append(panel);
-  } else if (session.kind === "complete") {
-    section.append(deckHeading());
-    const panel = el("div", "panel complete-panel");
-    panel.append(el("h1", "", "Paquet terminé"));
-    const buttons = el("div", "choice-actions");
-    buttons.append(action("Recommencer", "restart", "button-primary", "restart"), action("Importer un paquet", "import", "button-outline", "upload"));
-    panel.append(buttons);
-    section.append(panel);
-    if (session.undo) section.append(action("Annuler", "undo", "button-text", "undo"));
-  } else {
-    const card = session.cards[session.queue[0]!]!;
-    const top = el("div", "review-top");
-    top.append(deckHeading());
-    const counter = el("p", "remaining", `${countLabel(session.queue.length)} restante${session.queue.length === 1 ? "" : "s"}`);
-    counter.setAttribute("role", "status");
-    top.append(counter);
-    section.append(top);
-    if (session.kind === "question") {
-      section.append(el("h1", "sr-only", "Ta question"));
-      const cardButton = action("", "reveal", "flashcard card-button");
-      cardButton.append(el("span", "eyebrow", "QUESTION"), el("span", "card-text question-text", card.question),
-        el("span", "reveal-hint", "Révéler la réponse"));
-      section.append(cardButton);
-    } else {
-      section.append(el("h1", "sr-only", "Ta réponse"));
-      const panel = el("div", "flashcard answer-card");
-      panel.append(el("p", "eyebrow", "QUESTION"), el("p", "card-text answer-question", card.question));
-      const answer = el("div", "answer-section");
-      answer.id = "revealed-answer";
-      answer.tabIndex = -1;
-      answer.setAttribute("role", "region");
-      answer.setAttribute("aria-label", "Réponse");
-      answer.append(el("p", "eyebrow", "RÉPONSE"), el("p", "card-text answer-text", card.answer));
-      panel.append(answer);
-      const buttons = el("div", "rating-actions");
-      buttons.setAttribute("aria-label", "Évaluer ta réponse");
-      buttons.append(action("J’ai trouvé", "known", "button-success"), action("À revoir", "again", "button-danger"));
-      section.append(panel, buttons);
-    }
-    const secondary = el("nav", "secondary-actions");
-    secondary.setAttribute("aria-label", "Navigation du paquet");
-    secondary.append(action("Accueil", "home", "button-text", "home"));
-    if (session.undo) secondary.append(action("Annuler", "undo", "button-text", "undo"));
-    secondary.append(action("Recommencer", "restart", "button-text", "restart"));
-    section.append(secondary);
-  }
+  } else section = renderReview(session, "standalone");
   view.replaceChildren(section);
   setReading(reading);
   if (focus === "answer") required("revealed-answer").focus();
@@ -168,15 +90,17 @@ view.addEventListener("click", (event) => {
   switch (button.dataset.action) {
     case "import": importFile(button); break;
     case "home": requestHome(); break;
-    case "ordered": showNotice(""); setSession(start(session), "reveal"); break;
-    case "shuffle": showNotice(""); setSession(start(session, true), "reveal"); break;
-    case "reveal": setSession(reveal(session), "answer"); break;
-    case "known": setSession(rate(session, "known"), session.kind === "answer" && session.queue.length === 1 ? "restart" : "reveal"); break;
-    case "again": setSession(rate(session, "again"), "reveal"); break;
-    case "undo": setSession(undo(session), "answer"); break;
     case "restart":
       if (!reading && session.kind !== "empty") restartDialog.showModal();
       break;
+    default: {
+      const name = button.dataset.action;
+      const next = name && reviewAction(session, name);
+      if (next) {
+        if (name === "ordered" || name === "shuffle") showNotice("");
+        setSession(next.session, next.focus);
+      }
+    }
   }
 });
 

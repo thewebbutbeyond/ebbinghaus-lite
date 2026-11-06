@@ -1,0 +1,126 @@
+.portal-header {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.portal-header a,
+.portal-page a,
+.portal-back {
+  text-decoration: none;
+}
+
+.portal-logout {
+  margin-inline-start: auto;
+  white-space: nowrap;
+  color: var(--destructive);
+}
+
+.portal-logout .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.portal-document-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.portal-page {
+  display: grid;
+  gap: 1.25rem;
+  padding-block: 1rem 2rem;
+}
+
+#portal-main {
+  margin-block: 0 auto;
+  padding-block-start: 1rem;
+}
+
+.portal-centered-heading {
+  text-align: center;
+}
+
+.portal-page h1,
+.portal-page h2,
+.portal-page h3,
+.portal-page p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.portal-back {
+  margin-block-end: 1rem;
+}
+
+.portal-list {
+  display: grid;
+  gap: 0.65rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.portal-section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.portal-section h2 {
+  font-size: 1.15rem;
+}
+
+.portal-item {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.portal-item h3 {
+  font-size: 1rem;
+}
+
+.portal-resource-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.portal-resource-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.portal-download {
+  width: 48px;
+  padding: 0;
+}
+
+.portal-login {
+  max-width: 25rem;
+  width: 100%;
+  justify-self: center;
+}
+
+.portal-login,
+.portal-login label {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.portal-login input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid currentColor;
+  border-radius: 0.45rem;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  color: inherit;
+  font: inherit;
+}
+
+.portal-login button {
+  margin-block-start: 0.5rem;
+}

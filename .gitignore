@@ -1,5 +1,7 @@
 node_modules/
 dist/
+dist-portal/
+.portal-data.local/
 .DS_Store
 .omx/
 .env
