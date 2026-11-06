@@ -28,6 +28,7 @@ test("the welcome page previews a card without leaving and links to the catalogu
   await expect(page.getByText(/Accès libre, sans compte|Dans la bibliothèque|Importer des cartes/)).toHaveCount(0);
   const preview = page.getByRole("region", { name: "Aperçu de la bibliothèque" });
   await expect(preview).toBeVisible();
+  await expect(preview.getByText("ebbinghaus lite", { exact: true })).toBeVisible();
   await expect(preview.getByRole("link")).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -71,9 +72,12 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
   await expect(page).toHaveURL(new RegExp(algo + "$"));
   await expect(heading).toHaveText("Algorithmique I");
   await expect(page.getByRole("heading", { name: "Flashcards" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Fiches méthode" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Formulaire et méthode" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Corrigés" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Sujets et corrigés" })).toHaveCount(0);
+  await expect(page.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
+  await expect(page.getByText(/^Dernière mise à jour :/)).toBeVisible();
+  await expect(page.getByText(/correspondance avec le programme/)).toHaveCount(0);
   if (info.project.name === "desktop") {
     await expect(breadcrumbs.getByRole("link")).toHaveText(["Institutions", "HE2B", "ESI"]);
     await expect(breadcrumbs.locator('[aria-current="page"]')).toHaveText("Algorithmique I");
@@ -88,9 +92,17 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
   await page.getByRole("link", { name: "Ouvrir — Introduction à la cybersécurité" }).click();
   await expect(heading).toHaveText("Introduction à la cybersécurité");
   await expect(page.getByRole("heading", { name: "Flashcards" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Fiches méthode" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Formulaire et méthode" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Corrigés" })).toBeVisible();
-  await expect(page.getByText(/examen à confirmer/i)).toBeVisible();
+  await expect(page.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
+  await expect(page.getByText(/^Dernière mise à jour :/)).toBeVisible();
+  await expect(page.getByText(/fichier daté|examen à confirmer|révision complète/i)).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Ouvrir — Introduction à la cybersécurité", exact: true }))
+    .toHaveAttribute("href", /\/paquets\/revision-complete$/);
+  await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Juin 2025 · Série A" }))
+    .toHaveAttribute("href", /Corrige-Examen-2025-06-13\.pdf$/);
+  await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Janvier 2026 · Série A" }))
+    .toHaveAttribute("href", /Corrige-Examen-2026-01-23-a\.pdf$/);
   await page.getByRole("link", { name: /^ebbinghaus lite/ }).click();
   await expect(heading).toHaveText("Révise tes cours");
 
@@ -156,7 +168,7 @@ test("a published deck uses the shared review flow and keeps its back control", 
 
 test("PDFs open in a new tab and download with their published bytes", async ({ page }) => {
   await page.goto(algo);
-  for (const [section, path] of [["Fiches méthode", sheetPath], ["Corrigés", correctionPath]] as const) {
+  for (const [section, path] of [["Formulaire et méthode", sheetPath], ["Corrigés", correctionPath]] as const) {
     const sectionLocator = page.locator("section.portal-section").filter({
       has: page.getByRole("heading", { name: section }),
     });
@@ -200,7 +212,7 @@ test("the Pages artifact contains exactly the reviewed file set and no private e
   const publishedIndex = await readFile("publication/cours/index.html", "utf8");
   const reviewed = Array.from(publishedIndex.matchAll(/href="\.\/(algo|secu)\/([^"]+\.(?:pdf|json))"/g),
     (match) => "cours/" + match[1] + "/" + match[2]).sort();
-  expect(reviewed.filter((file) => file.endsWith(".pdf"))).toHaveLength(16);
+  expect(reviewed.filter((file) => file.endsWith(".pdf"))).toHaveLength(17);
   expect(reviewed.filter((file) => file.endsWith(".json"))).toHaveLength(7);
   const entries = await readdir("dist-pages", { recursive: true, withFileTypes: true });
   const files = entries.filter((entry) => !entry.isDirectory()).map((entry) =>

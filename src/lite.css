@@ -2,9 +2,10 @@
   display: none;
 }
 
-.lite-note {
+.lite-course-updated {
   color: var(--muted-foreground);
   font-size: 0.875rem;
+  margin: 0;
 }
 
 .lite-navigation-row {

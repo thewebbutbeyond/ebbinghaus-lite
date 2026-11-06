@@ -19,6 +19,7 @@ const back = document.querySelector<HTMLAnchorElement>("#lite-back")!;
 const breadcrumbs = document.querySelector<HTMLElement>("#lite-breadcrumbs")!;
 const restartDialog = document.querySelector<HTMLDialogElement>("#lite-restart")!;
 const home: Crumb = { title: "Institutions", href: "#/" };
+const courseDate = new Intl.DateTimeFormat("fr-BE", { dateStyle: "long", timeZone: "UTC" });
 const institutions = catalog.flatMap((institution) => {
   const departments = institution.departments.flatMap((department) => {
     const courses = department.courses.filter((course) =>
@@ -140,9 +141,14 @@ function row(title: string, href: string, resource?: Resource): HTMLLIElement {
 
 function showCourse(course: Course, href: string, focus: boolean): void {
   const page = screen(course.title);
+  const updated = el("p", "lite-course-updated", "Dernière mise à jour : ");
+  const date = el("time", "", courseDate.format(new Date(course.updatedOn)));
+  date.dateTime = course.updatedOn;
+  updated.append(date);
+  page.append(updated);
   for (const [label, resources, isDeck] of [
     ["Flashcards", course.decks, true],
-    ["Fiches méthode", course.sheets, false],
+    ["Formulaire et méthode", course.sheets, false],
     ["Corrigés", course.corrections, false],
   ] as const) {
     if (!resources.length) continue;
@@ -151,11 +157,9 @@ function showCourse(course: Course, href: string, focus: boolean): void {
     for (const entry of resources) {
       const item = isDeck ? row(entry.title, href + "/paquets/" + entry.id)
         : row(entry.title, resourceUrl(entry), entry);
-      if (entry.note) item.append(el("p", "lite-note", entry.note));
       list.append(item);
     }
     section.append(el("h2", "", label), list);
-    if (label === "Corrigés" && course.note) section.append(el("p", "lite-note", course.note));
     page.append(section);
   }
   show(page, focus);
