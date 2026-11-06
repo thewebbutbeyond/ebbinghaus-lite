@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Flashcards, fiches méthode et corrigés pour préparer tes examens." />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src data:; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../src/style.css" />
+    <link rel="stylesheet" href="../src/portal.css" />
+    <link rel="stylesheet" href="../src/lite.css" />
+    <title>ebbinghaus lite</title>
+  </head>
+  <body>
+    <a class="skip-link" id="lite-skip" href="#portal-main">Aller au contenu</a>
+    <div class="page">
+      <header class="header portal-header">
+        <a class="brand" href="./" aria-label="ebbinghaus lite — Accueil">
+          <span class="brand-mark" id="lite-brand-icon" aria-hidden="true"></span>
+          <span class="brand-name">ebbinghaus lite</span>
+        </a>
+      </header>
+      <main class="lite-landing-page" id="portal-main" tabindex="-1">
+        <a class="button button-text portal-back" id="lite-back" hidden><span></span></a>
+        <nav id="lite-breadcrumbs" aria-label="Fil d’Ariane" hidden></nav>
+        <div id="lite-landing">
+          <section class="lite-hero" aria-labelledby="lite-hero-title">
+            <h1 id="lite-hero-title">Révise tes cours</h1>
+            <p>Flashcards, fiches méthode et corrigés pour préparer tes examens.</p>
+            <a class="button button-primary" href="#/">
+              Voir les cours
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
+            </a>
+          </section>
+          <section class="lite-preview" aria-label="Aperçu de la bibliothèque">
+            <div class="lite-preview-bar">
+              <span class="lite-preview-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>Bibliothèque</span>
+            </div>
+            <div class="lite-preview-content">
+              <div class="lite-preview-sidebar">
+                <p>HE2B / ESI</p>
+                <ul>
+                  <li>Algorithmique I</li>
+                  <li class="lite-preview-selected">Introduction à la cybersécurité</li>
+                </ul>
+              </div>
+              <div class="lite-preview-course">
+                <h2>Introduction à la cybersécurité</h2>
+                <div class="lite-preview-card">
+                  <p class="lite-preview-label">Flashcard · Introduction</p>
+                  <p class="lite-preview-question">À quels deux moments faut-il protéger les données sensibles d’un dossier médical en ligne&nbsp;?</p>
+                  <details class="lite-preview-reveal">
+                    <summary class="button button-small button-outline">
+                      <span class="lite-show-answer">Révéler la réponse</span>
+                      <span class="lite-hide-answer">Masquer la réponse</span>
+                    </summary>
+                    <p class="lite-preview-answer">Pendant leur transmission et pendant leur stockage.</p>
+                  </details>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div id="lite-view" hidden></div>
+      </main>
+    </div>
+    <dialog id="lite-restart" aria-labelledby="lite-restart-title">
+      <h2 id="lite-restart-title">Recommencer le paquet ?</h2>
+      <p>Tu vas reprendre toutes les cartes depuis le début.</p>
+      <div class="dialog-actions">
+        <button id="lite-restart-cancel" class="button button-outline" type="button" autofocus>Annuler</button>
+        <button id="lite-restart-confirm" class="button button-primary" type="button">Recommencer</button>
+      </div>
+    </dialog>
+    <script type="module" src="../src/lite.ts"></script>
+  </body>
+</html>

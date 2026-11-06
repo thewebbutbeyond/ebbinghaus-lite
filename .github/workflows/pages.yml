@@ -1,4 +1,4 @@
-name: Publier le viewer
+name: Publier ebbinghaus lite
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.repository == 'thewebbutbeyond/ebbinghaus-lite'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -30,14 +30,12 @@ jobs:
         run: npm ci
       - name: Test
         run: npm test
-      - name: Build
-        run: npm run build
-      - name: Add public course materials
-        run: cp -R publication/cours dist/cours
+      - name: Build Pages
+        run: npm run build:pages
       - name: Upload site
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
-          path: dist
+          path: dist-pages
 
   deploy:
     needs: build
