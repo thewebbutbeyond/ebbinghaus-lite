@@ -72,7 +72,7 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
   await expect(page).toHaveURL(new RegExp(algo + "$"));
   await expect(heading).toHaveText("Algorithmique I");
   await expect(page.getByRole("heading", { name: "Flashcards" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Formulaire et méthode" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Formulaire et méthodes", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Corrigés" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Sujets et corrigés" })).toHaveCount(0);
   await expect(page.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
@@ -92,7 +92,7 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
   await page.getByRole("link", { name: "Ouvrir — Introduction à la cybersécurité" }).click();
   await expect(heading).toHaveText("Introduction à la cybersécurité");
   await expect(page.getByRole("heading", { name: "Flashcards" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Formulaire et méthode" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Formulaire et méthodes", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Corrigés" })).toBeVisible();
   await expect(page.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
   await expect(page.getByText(/^Dernière mise à jour :/)).toBeVisible();
@@ -131,7 +131,7 @@ test("a published deck uses the shared review flow and keeps its back control", 
   const back = page.locator("#lite-back");
   const position = await corner(back);
   const publishedResponse = page.waitForResponse((response) => new URL(response.url()).pathname === root + introSource);
-  await page.getByRole("link", { name: /^Ouvrir — .*Introduction$/ }).click();
+  await page.getByRole("link", { name: "Ouvrir — Chapitre 0 · Introduction", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(introduction + "$"));
   expect((await publishedResponse).ok()).toBe(true);
   await expect(back).toHaveText("Retour au cours");
@@ -141,7 +141,7 @@ test("a published deck uses the shared review flow and keeps its back control", 
   };
   await stable();
   const deckTitle = page.locator(".filename");
-  await expect(deckTitle).toHaveText(/Introduction$/);
+  await expect(deckTitle).toHaveText("Chapitre 0 · Introduction");
   expect((await corner(deckTitle)).y).toBeGreaterThan(position.y);
   await page.getByRole("button", { name: "Non" }).click();
   await stable();
@@ -168,7 +168,7 @@ test("a published deck uses the shared review flow and keeps its back control", 
 
 test("PDFs open in a new tab and download with their published bytes", async ({ page }) => {
   await page.goto(algo);
-  for (const [section, path] of [["Formulaire et méthode", sheetPath], ["Corrigés", correctionPath]] as const) {
+  for (const [section, path] of [["Formulaire et méthodes", sheetPath], ["Corrigés", correctionPath]] as const) {
     const sectionLocator = page.locator("section.portal-section").filter({
       has: page.getByRole("heading", { name: section }),
     });

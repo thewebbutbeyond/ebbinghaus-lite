@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import { icon } from "./icons.ts";
 import { parseDeck } from "./import.ts";
-import { catalog, type Course, type Resource } from "./lite-catalog.ts";
+import { catalog, methodSheetTitle, type Course, type Resource } from "./lite-catalog.ts";
 import { action, el, renderReview, reviewAction } from "./review-view.ts";
 import { restart, type Session } from "./session.ts";
 
@@ -148,7 +148,7 @@ function showCourse(course: Course, href: string, focus: boolean): void {
   page.append(updated);
   for (const [label, resources, isDeck] of [
     ["Flashcards", course.decks, true],
-    ["Formulaire et méthode", course.sheets, false],
+    [methodSheetTitle, course.sheets, false],
     ["Corrigés", course.corrections, false],
   ] as const) {
     if (!resources.length) continue;
