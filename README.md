@@ -4,6 +4,9 @@ Le viewer permet de réviser un paquet de flashcards à partir d’un fichier
 JSON, sur téléphone, tablette ou ordinateur. Le fichier est lu dans le
 navigateur et reste sur l’appareil.
 
+Les [supports de cours publics](https://thewebbutbeyond.github.io/ebbinghaus-viewer/cours/)
+regroupent des corrigés, fiches méthode et paquets de cartes.
+
 ## Démarrage rapide
 
 1. Ouvre [le viewer](https://thewebbutbeyond.github.io/ebbinghaus-viewer/).
