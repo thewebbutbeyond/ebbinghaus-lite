@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../src/style.css" />
+    <link rel="stylesheet" href="../src/portal.css" />
+    <title>ebbinghaus lite</title>
+  </head>
+  <body>
+    <a class="skip-link" id="portal-skip" href="#portal-main">Aller au contenu</a>
+    <div class="page">
+      <header class="header portal-header">
+        <a class="brand" href="#/" aria-label="ebbinghaus lite — Mes cours">
+          <span class="brand-mark" id="portal-brand-icon" aria-hidden="true"></span>
+          <span class="brand-name">ebbinghaus lite</span>
+        </a>
+        <button class="button button-text portal-logout" id="portal-logout" type="button"
+          title="Se déconnecter" hidden><span>Se déconnecter</span></button>
+      </header>
+      <main id="portal-main" tabindex="-1">
+        <a class="button button-text portal-back" id="portal-back" hidden><span></span></a>
+        <div id="portal-notice" class="notice" role="status" aria-live="polite"></div>
+        <div id="portal-view"></div>
+      </main>
+    </div>
+    <dialog id="portal-restart" aria-labelledby="portal-restart-title">
+      <h2 id="portal-restart-title">Recommencer le paquet ?</h2>
+      <p>Tu vas reprendre toutes les cartes depuis le début.</p>
+      <div class="dialog-actions">
+        <button id="portal-restart-cancel" class="button button-outline" type="button" autofocus>Annuler</button>
+        <button id="portal-restart-confirm" class="button button-primary" type="button">Recommencer</button>
+      </div>
+    </dialog>
+    <script type="module" src="../src/portal.ts"></script>
+  </body>
+</html>
