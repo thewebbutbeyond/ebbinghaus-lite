@@ -20,6 +20,11 @@ format et sous un chemin public autorisé. Les fichiers déjà publiés
 gardent leur chemin sous `cours/`. Les originaux de l’école et les données
 privées restent hors du catalogue et de l’artefact.
 
+Quand tu modifies un cours ou l’un de ses PDF ou paquets, mets aussi à jour
+son champ \`updatedOn\` dans le catalogue avec la date du changement
+(\`AAAA-MM-JJ\`). Le site affiche cette date sur la page du cours. Un
+redéploiement seul ne la change pas.
+
 `npm run test:pages` sert cet artefact sous `/ebbinghaus-lite/` et lance
 les tests sur deux tailles d’écran. Sans secours de routage, une URL de
 fichier inexistante répond 404. Le contrôle d’inventaire vérifie les PDF et
