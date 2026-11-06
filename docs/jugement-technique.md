@@ -123,7 +123,7 @@ nouveau la résolution. [Chemins de base dans Vite](https://vite.dev/guide/build
 [Le workflow](../.github/workflows/pages.yml) se lance manuellement sur
 `main`. Le job de build installe les dépendances verrouillées avec
 `npm ci`, lance les tests unitaires, vérifie les types pendant la
-construction et transmet `dist/`. Le job de publication déploie ce
+construction et transmet `dist-pages/`. Le job de publication déploie ce
 résultat de **la même exécution**. Les droits de publication sont
 accordés à ce second job. Les tests Playwright existent ; le workflow
 ne les lance pas. [Documentation GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).

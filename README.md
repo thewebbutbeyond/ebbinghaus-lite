@@ -1,35 +1,30 @@
-# Ebbinghaus Viewer
+# ebbinghaus lite
 
-Le viewer permet de réviser un paquet de flashcards à partir d’un fichier
-JSON, sur téléphone, tablette ou ordinateur. Le fichier est lu dans le
-navigateur et reste sur l’appareil.
-
-Les [supports de cours publics](https://thewebbutbeyond.github.io/ebbinghaus-viewer/cours/)
-regroupent des corrigés, fiches méthode et paquets de cartes.
+Bibliothèque publique de flashcards, fiches méthode et corrigés. Choisis
+ton établissement, puis ton département et ton cours. Aucun compte requis.
+L’importateur JSON est une page séparée : le fichier importé reste sur
+l’appareil.
 
 ## Démarrage rapide
-
-1. Ouvre [le viewer](https://thewebbutbeyond.github.io/ebbinghaus-viewer/).
-2. Clique sur **Importer tes cartes** et choisis un fichier JSON. Pour
-   essayer, utilise [le paquet fictif](examples/paquet-fictif.json).
-3. Touche une carte pour révéler la réponse. **J’ai trouvé** retire la carte
-   du paquet en cours ; **À revoir** la remet à la fin.
 
 Pour travailler sur le projet en local, il faut Node.js 24.12 ou plus récent
 et npm. Depuis le dossier du dépôt :
 
 ```sh
 npm ci
-npm run dev
+npm run build:pages
+npm run preview:pages
 ```
 
-Ouvre [le viewer local](http://127.0.0.1:5173). Pour arrêter le serveur,
-fais Ctrl+C.
+Ouvre [ebbinghaus lite](http://127.0.0.1:4177/ebbinghaus-lite/), clique sur
+**Voir les cours** et suis **HE2B → ESI**. Pour réviser ton propre paquet, ouvre
+[l’importateur](http://127.0.0.1:4177/ebbinghaus-lite/importer/) et choisis
+un fichier JSON, par exemple [le paquet fictif](examples/paquet-fictif.json).
 
-## Portail de cours local
+## Prototype privé
 
-Le portail donne à chaque élève accès aux flashcards, fiches méthode et
-corrigés de ses cours. Pour l’essayer avec deux comptes et des documents fictifs :
+Le prototype avec connexion reste utilisable en local et ne fait pas partie
+du site Pages. Pour l’essayer avec deux comptes et des documents fictifs :
 
 ```sh
 npm ci
@@ -44,10 +39,7 @@ reste accessible sans compte.
 
 ## Documentation
 
-Le [guide du portail](docs/portail-local.md) explique comment attribuer un cours,
-publier des fichiers et vérifier le parcours élève.
-
-Le [guide technique](docs/guide-technique.md) décrit l’architecture, les choix
-de langage, le format des paquets et les garanties du code. La page
-[Expertise et décisions d’ingénierie](docs/jugement-technique.md) explique
-les connaissances derrière ces choix et le fonctionnement du déploiement.
+- [Bibliothèque publique : architecture et passage à Pages](docs/bibliotheque-pages.md)
+- [Guide technique de l’importateur](docs/guide-technique.md)
+- [Expertise et décisions d’ingénierie](docs/jugement-technique.md)
+- [Guide du prototype privé](docs/portail-local.md)

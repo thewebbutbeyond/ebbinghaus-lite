@@ -1,5 +1,5 @@
 {
-  "name": "ebbinghaus-viewer",
+  "name": "ebbinghaus-lite",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -13,6 +13,9 @@
     "typecheck": "tsc --noEmit",
     "build": "npm run typecheck && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
+    "build:pages": "npm run typecheck && vite build --config vite.pages.config.ts && node scripts/stage-pages.ts",
+    "preview:pages": "vite preview --config vite.pages.config.ts --host 127.0.0.1 --port 4177 --strictPort",
+    "test:pages": "npm run build:pages && playwright test --config playwright.pages.config.ts",
     "build:portal": "npm run typecheck && vite build --config vite.portal.config.ts",
     "portal:demo": "node server/demo.ts",
     "portal:account": "node server/account.ts",

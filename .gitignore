@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-portal/
+dist-pages/
 .portal-data.local/
 .DS_Store
 .omx/

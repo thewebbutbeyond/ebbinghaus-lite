@@ -256,13 +256,11 @@ npm run preview
 Ouvre [l’aperçu local](http://127.0.0.1:4173). Le double-clic sur
 `index.html` ne lance pas le projet. La configuration Vite utilise
 `base: "./"` : les fichiers du site sont chargés relativement à la page,
-ce qui permet de les servir sous `/ebbinghaus-viewer/`.
+ce qui permet de déplacer ce build d’une page sous un sous-chemin.
 
-En production, GitHub Pages utilise **GitHub Actions** comme source. Lance
-**Publier le viewer** dans l’onglet **Actions** sur `main`. Le
-[workflow](../.github/workflows/pages.yml) installe les dépendances, lance
-les tests, construit le site et publie seulement `dist/`. Une mise à jour de
-`develop` ne déclenche pas la publication.
+Le build Pages est différent : il regroupe la bibliothèque et l’importateur
+sous `/ebbinghaus-lite/`. Le [guide de la bibliothèque](bibliotheque-pages.md)
+décrit ce build et le workflow de publication.
 
 Le logo Brain et les icônes proviennent de Lucide 0.575.0
 ([licence](../public/LUCIDE-LICENSE.txt)). La marque et les couleurs sont
