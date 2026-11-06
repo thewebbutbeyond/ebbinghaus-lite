@@ -1,0 +1,858 @@
+[
+  {
+    "question": "À quels deux moments faut-il protéger les données sensibles d’un dossier médical en ligne ?",
+    "answer": "Pendant leur transmission et pendant leur stockage."
+  },
+  {
+    "question": "Pourquoi la vie privée compte-t-elle même si on n’a « rien à cacher » ?",
+    "answer": "On doit pouvoir choisir qui a accès à ses informations personnelles, comme son dossier médical."
+  },
+  {
+    "question": "Sur quoi s’appuyer pour choisir une protection adaptée à un risque ?",
+    "answer": "Sur ce qui pourrait arriver et sur la probabilité que cela arrive."
+  },
+  {
+    "question": "Un courriel imite celui de l’école et demande à l’étudiant de saisir son mot de passe sur une fausse page. Comment s’appelle cette attaque ?",
+    "answer": "L’hameçonnage (phishing). L’attaquant se fait passer pour une source de confiance afin d’obtenir une information sensible."
+  },
+  {
+    "question": "Une mesure de sécurité est si contraignante que les utilisateurs la contournent. Quel défaut de conception cela révèle-t-il ?",
+    "answer": "La protection ne tient pas compte des usages réels. Elle doit rester assez simple pour que les gens puissent l’appliquer."
+  },
+  {
+    "question": "Qu’est-ce qui rend une intrusion simulée acceptable dans le cadre d’un test de sécurité ?",
+    "answer": "Une autorisation préalable et un périmètre qui définit ce que le testeur peut faire."
+  },
+  {
+    "question": "Quelle est la différence entre un test d’intrusion (pentest) et un exercice de red team ?",
+    "answer": "Le pentest cherche à démontrer qu’une cible peut être compromise. La red team simule une campagne pour atteindre un objectif d’attaquant."
+  },
+  {
+    "question": "Quand faut-il prendre en compte les menaces et les besoins de sécurité dans le développement d’un logiciel ?",
+    "answer": "Dès la conception, avant le déploiement."
+  },
+  {
+    "question": "Les étudiants ont le droit de consulter leurs notes, mais une attaque rend le service inaccessible. Quel objectif de sécurité est compromis ?",
+    "answer": "La disponibilité (availability) : le service doit rester accessible aux utilisateurs autorisés quand ils en ont besoin."
+  },
+  {
+    "question": "Des centaines de machines envoient des requêtes à un serveur jusqu’à le rendre inaccessible. De quelle attaque s’agit-il ?",
+    "answer": "Un déni de service distribué (DDoS) : plusieurs machines saturent la cible."
+  },
+  {
+    "question": "Le site vérifie l’identité de Léa à la connexion, puis décide si elle peut ouvrir les notes de sa classe. Quelle étape relève de l’authentification et laquelle relève de l’autorisation ?",
+    "answer": "Vérifier l’identité de Léa, c’est l’authentification (authentication). Déterminer si elle a le droit d’ouvrir les notes, c’est l’autorisation (authorisation)."
+  },
+  {
+    "question": "Pourquoi un site peut-il utiliser un identifiant de session après la connexion ?",
+    "answer": "HTTP ne conserve pas d’état entre les requêtes. L’identifiant permet de rattacher chaque requête à la même session."
+  },
+  {
+    "question": "Un attaquant vole un identifiant de session déjà utilisé par la victime et s’en sert pour se faire passer pour elle. Quel est le nom de l’attaque ?",
+    "answer": "Le détournement de session (session hijacking)."
+  },
+  {
+    "question": "Un attaquant impose à la victime un identifiant de session qu’il connaît avant qu’elle se connecte. Quel est le nom de l’attaque ?",
+    "answer": "La fixation de session (session fixation)."
+  },
+  {
+    "question": "Un attaquant fabrique un cookie censé donner des droits d’administrateur. De quel type d’attaque s’agit-il ?",
+    "answer": "La falsification de cookie (cookie forgery)."
+  },
+  {
+    "question": "Une note a été modifiée. Quel objectif de sécurité permet de savoir quel compte a fait la modification ?",
+    "answer": "La traçabilité des actions (accountability) : elle permet d’attribuer une action à un compte."
+  },
+  {
+    "question": "Quels sont les trois objectifs regroupés sous le sigle AAA ?",
+    "answer": "Authentification (qui es-tu ?), autorisation (que peux-tu faire ?) et traçabilité (qu’as-tu fait ?)."
+  },
+  {
+    "question": "Pourquoi faut-il protéger l’intégrité des journaux d’activité ?",
+    "answer": "Pour qu’un attaquant ne puisse pas modifier ou effacer des traces sans que cela se voie."
+  },
+  {
+    "question": "Pourquoi éviter d’enregistrer des mots de passe ou d’autres secrets dans les journaux d’activité ?",
+    "answer": "Les personnes qui peuvent lire les journaux pourraient récupérer ces secrets."
+  },
+  {
+    "question": "Que cherche à garantir la non-répudiation d’une transaction ?",
+    "answer": "Qu’on puisse prouver la participation d’une partie si elle la conteste ensuite."
+  },
+  {
+    "question": "Un attaquant modifie un document sans autorisation. Quel objectif de sécurité permet de détecter cette modification ?",
+    "answer": "L’intégrité (integrity) : elle vise à protéger les données contre les modifications non autorisées ou à les détecter."
+  },
+  {
+    "question": "Un attaquant lit un document réservé aux enseignants sans modifier son contenu. Quel objectif de sécurité est compromis ?",
+    "answer": "La confidentialité (confidentiality) : le document a été divulgué à une personne qui n’avait pas le droit de le lire."
+  },
+  {
+    "question": "Quelle différence entre chiffrer un message et le dissimuler dans une image ?",
+    "answer": "Le chiffrement rend le message illisible sans la clé. La stéganographie cherche à cacher l’existence du message."
+  },
+  {
+    "question": "Un attaquant connaît l’algorithme de chiffrement. Selon le principe de Kerckhoffs, qu’est-ce qui doit encore rester secret ?",
+    "answer": "La clé. La sécurité doit tenir même si le fonctionnement de l’algorithme est connu."
+  },
+  {
+    "question": "Pourquoi un système doit-il permettre de remplacer rapidement une clé ?",
+    "answer": "Pour cesser de l’utiliser dès qu’on soupçonne qu’elle a été compromise."
+  },
+  {
+    "question": "Quel avantage y a-t-il à faire examiner un mécanisme de sécurité par des experts extérieurs ?",
+    "answer": "Ils peuvent repérer des failles que ses concepteurs n’ont pas vues."
+  },
+  {
+    "question": "Ton framework fournit un mécanisme d’authentification éprouvé. Pourquoi l’utiliser plutôt que le réécrire ?",
+    "answer": "Pour éviter d’introduire des failles en réimplémentant un mécanisme complexe."
+  },
+  {
+    "question": "Quelle différence essentielle y a-t-il entre hacher et chiffrer un message ?",
+    "answer": "Le chiffrement permet de retrouver le message avec la bonne clé. Le hachage produit une empreinte qu’il est difficile d’inverser."
+  },
+  {
+    "question": "Un fichier fait 1 Ko, un autre 1 Go. Lequel a la plus longue empreinte SHA-256 ?",
+    "answer": "Aucun : SHA-256 produit toujours une empreinte de 256 bits."
+  },
+  {
+    "question": "Deux personnes calculent séparément le SHA-256 du même fichier. Peuvent-elles obtenir des résultats différents ?",
+    "answer": "Non. SHA-256 est déterministe : une même entrée donne toujours la même empreinte."
+  },
+  {
+    "question": "À quoi sert le bourrage (padding) quand un algorithme exige des blocs de taille fixe ?",
+    "answer": "Il complète le message selon une règle définie pour que sa longueur soit un multiple de la taille d’un bloc."
+  },
+  {
+    "question": "Un seul bit du fichier change et l’empreinte change fortement. Comment s’appelle cet effet ?",
+    "answer": "L’effet d’avalanche (avalanche effect). Selon le critère strict, chaque bit de sortie a une chance sur deux de changer."
+  },
+  {
+    "question": "Quand on inverse un bit d’entrée, que demande le critère d’indépendance des bits ?",
+    "answer": "Le fait qu’un bit de sortie change ne doit pas permettre de prédire si un autre bit de sortie changera."
+  },
+  {
+    "question": "Le site officiel publie l’empreinte d’un fichier. Comment vérifier que le fichier téléchargé correspond ?",
+    "answer": "Calcule son empreinte avec la même fonction et compare-la à l’empreinte officielle. Si elles diffèrent, les fichiers diffèrent."
+  },
+  {
+    "question": "Un attaquant peut remplacer le message et son empreinte. Pourquoi l’empreinte seule ne suffit-elle pas ?",
+    "answer": "Il peut calculer une nouvelle empreinte pour le message modifié. Il faut une empreinte de référence fiable pour détecter la falsification."
+  },
+  {
+    "question": "Quelle résistance rend difficile de retrouver un message à partir d’une empreinte donnée ?",
+    "answer": "La résistance à la préimage (preimage resistance)."
+  },
+  {
+    "question": "Un attaquant connaît un message et cherche un autre message qui a la même empreinte. À quelle résistance se heurte-t-il ?",
+    "answer": "La résistance à la seconde préimage (second preimage resistance). Le premier message lui est imposé."
+  },
+  {
+    "question": "Que cherche un attaquant qui veut trouver une collision sans partir d’un message imposé ?",
+    "answer": "Deux messages différents de son choix qui ont la même empreinte."
+  },
+  {
+    "question": "Pourquoi les collisions sont-elles inévitables avec une empreinte de taille fixe ?",
+    "answer": "Il y a plus de messages possibles que d’empreintes. Au moins deux messages partagent donc une empreinte."
+  },
+  {
+    "question": "Pour une empreinte de n bits bien répartie, combien d’essais faut-il environ pour avoir une bonne chance de trouver une collision ?",
+    "answer": "De l’ordre de 2^(n/2). C’est le principe de l’attaque des anniversaires (birthday attack)."
+  },
+  {
+    "question": "Pourquoi additionner les codes ASCII d’un texte ne donne-t-il pas un bon hachage cryptographique ?",
+    "answer": "Changer l’ordre des lettres ne change pas la somme. « abc » et « cab » donnent la même empreinte."
+  },
+  {
+    "question": "Que prend en entrée la fonction de compression de Merkle–Damgård ?",
+    "answer": "Un bloc du message et l’état produit par l’étape précédente. Au premier bloc, cet état est le vecteur d’initialisation fixe."
+  },
+  {
+    "question": "Quelles conditions rendent un hachage construit par Merkle–Damgård résistant aux collisions ?",
+    "answer": "Une fonction de compression résistante aux collisions et un schéma de bourrage adapté."
+  },
+  {
+    "question": "Quel est le principe de la variante wide-pipe ?",
+    "answer": "Elle conserve un état interne plus large que l’empreinte finale, puis le réduit à la fin."
+  },
+  {
+    "question": "Alice chiffre un fichier avec une clé symétrique. Quelle clé Bob doit-il utiliser pour le lire ?",
+    "answer": "La même clé secrète qu’Alice. Elle sert au chiffrement et au déchiffrement."
+  },
+  {
+    "question": "Avec une clé secrète différente par paire, combien de clés faut-il pour n personnes ?",
+    "answer": "n(n−1)/2, une pour chaque paire. Par exemple, 5 personnes nécessitent 10 clés."
+  },
+  {
+    "question": "Pourquoi le chiffre de César est-il facile à casser par force brute ?",
+    "answer": "La clé est le décalage des lettres. Sur un alphabet de 26 lettres, il n’y a que 25 décalages non nuls à essayer."
+  },
+  {
+    "question": "Qu’est-ce que l’analyse de fréquence exploite dans un message chiffré avec César ?",
+    "answer": "Le décalage remplace chaque lettre par la même autre lettre. Les fréquences restent donc reconnaissables."
+  },
+  {
+    "question": "Quelle différence y a-t-il entre un chiffrement par blocs et un chiffrement par flot ?",
+    "answer": "Le premier traite des blocs de taille fixe. Le second combine les bits ou octets du message avec un flot généré à partir de la clé."
+  },
+  {
+    "question": "En mode CBC, avec quoi combine-t-on chaque bloc de texte clair avant de le chiffrer ?",
+    "answer": "On fait un XOR avec le bloc chiffré précédent. Pour le premier bloc, on utilise le vecteur d’initialisation (IV)."
+  },
+  {
+    "question": "En mode CBC, fait-on le XOR avec le bloc chiffré précédent avant ou après le déchiffrement du bloc courant ?",
+    "answer": "Après. On déchiffre le bloc courant, puis on fait le XOR avec le bloc chiffré précédent, ou avec l’IV pour le premier bloc."
+  },
+  {
+    "question": "En mode CBC, comment obtenir deux textes chiffrés différents pour le même message et la même clé ?",
+    "answer": "En utilisant un IV différent. On le génère aléatoirement à chaque chiffrement."
+  },
+  {
+    "question": "Un fichier chiffré en CBC se déchiffre sans erreur. Cela prouve-t-il que personne ne l’a modifié ?",
+    "answer": "Non. Le CBC seul n’authentifie pas les données. Un fichier modifié peut se déchiffrer sans erreur."
+  },
+  {
+    "question": "À quelles conditions le masque jetable de Vernam (one-time pad) est-il incassable ?",
+    "answer": "Le masque doit être secret, uniformément aléatoire, au moins aussi long que le message et utilisé une seule fois."
+  },
+  {
+    "question": "Que permet de vérifier un MAC valide (message authentication code) ?",
+    "answer": "Le message n’a pas été modifié et son MAC a été produit par quelqu’un qui connaît la clé secrète partagée."
+  },
+  {
+    "question": "Qu’est-ce qui distingue un HMAC d’une empreinte ordinaire ?",
+    "answer": "Un HMAC combine une fonction de hachage et une clé secrète pour authentifier un message."
+  },
+  {
+    "question": "Pourquoi un MAC ne permet-il pas de prouver à un tiers lequel de deux correspondants a envoyé un message ?",
+    "answer": "Les deux connaissent la même clé secrète et peuvent créer le MAC. Il n’assure donc pas la non-répudiation."
+  },
+  {
+    "question": "En chiffrement authentifié avec données associées (AEAD), les données associées sont-elles chiffrées ?",
+    "answer": "Non. Elles restent lisibles, mais leur intégrité est vérifiée. Le contenu principal est chiffré et authentifié."
+  },
+  {
+    "question": "Sur quoi calcule-t-on le MAC dans Encrypt-then-MAC et dans MAC-then-Encrypt ?",
+    "answer": "Encrypt-then-MAC : sur le texte chiffré. MAC-then-Encrypt : sur le texte clair, puis on chiffre le texte et le MAC."
+  },
+  {
+    "question": "Dans Encrypt-then-MAC, utilise-t-on la même clé pour chiffrer et pour calculer le MAC ?",
+    "answer": "Non. On utilise une clé de chiffrement et une clé de MAC. Elles peuvent être dérivées d’un même secret."
+  },
+  {
+    "question": "Un attaquant renvoie un paquet chiffré valide qu’il a enregistré. Comment repérer ce rejeu (replay) ?",
+    "answer": "Authentifie le numéro de séquence avec le paquet, puis refuse les numéros déjà reçus."
+  },
+  {
+    "question": "Alice veut envoyer un message que seul Bob peut lire. Quelles clés utilise le chiffrement asymétrique ?",
+    "answer": "Alice chiffre avec la clé publique de Bob. Bob déchiffre avec sa clé privée."
+  },
+  {
+    "question": "Comment combiner chiffrement symétrique et asymétrique pour envoyer un gros fichier à Bob ?",
+    "answer": "Chiffre le fichier avec une clé symétrique temporaire. Chiffre seulement cette clé avec la clé publique de Bob."
+  },
+  {
+    "question": "Alice veut signer un message que Bob pourra vérifier. Quelles clés utilisent-ils ?",
+    "answer": "Alice signe avec sa clé privée. Bob vérifie la signature avec la clé publique d’Alice."
+  },
+  {
+    "question": "Bob vérifie une signature avec une clé publique dont il sait qu’elle appartient à Alice. Qu’est-ce que cela lui apprend si la signature est valide ?",
+    "answer": "Le message vérifié correspond à celui qui a été signé avec la clé privée associée à Alice."
+  },
+  {
+    "question": "Pourquoi calculer une empreinte avant de signer un long message ?",
+    "answer": "Une empreinte a une taille fixe et courte. Le mécanisme de signature peut travailler sur cette empreinte plutôt que sur tout le message."
+  },
+  {
+    "question": "Si une signature repose sur l’empreinte du message, quel est le risque de trouver un autre message qui a la même empreinte ?",
+    "answer": "La signature du premier message peut aussi être acceptée pour l’autre."
+  },
+  {
+    "question": "Un inconnu signe un message et joint une clé publique qui permet de le vérifier. Cela prouve-t-il son identité ?",
+    "answer": "Non. Cela relie la signature à la clé fournie, mais il faut vérifier séparément à qui appartient cette clé."
+  },
+  {
+    "question": "Pourquoi ne pas envoyer une clé symétrique en clair sur un réseau que quelqu’un peut écouter ?",
+    "answer": "L’observateur pourrait récupérer la clé et déchiffrer les messages protégés par celle-ci."
+  },
+  {
+    "question": "Dans un échange de clés RSA, comment Alice transmet-elle sa clé de session à Bob ?",
+    "answer": "Elle chiffre la clé de session avec la clé publique de Bob. Bob la déchiffre avec sa clé privée."
+  },
+  {
+    "question": "Que garantit la confidentialité persistante (forward secrecy) si une clé privée de long terme est volée ?",
+    "answer": "Le vol de cette clé ne suffit pas à déchiffrer les anciennes sessions."
+  },
+  {
+    "question": "En quoi une paire de clés éphémères diffère-t-elle d’une paire de clés persistantes ?",
+    "answer": "Elle est créée pour un échange et sa clé privée n’est pas réutilisée dans les sessions suivantes."
+  },
+  {
+    "question": "Un attaquant enregistre un échange de clés RSA statique. Pourquoi le vol ultérieur de la clé privée du serveur compromet-il cette session ?",
+    "answer": "Cette clé privée lui permet de déchiffrer la clé de session qu’il a enregistrée."
+  },
+  {
+    "question": "Dans Diffie–Hellman, comment Alice et Bob obtiennent-ils le même secret sans l’envoyer ?",
+    "answer": "Ils échangent leurs clés publiques. Chacun combine sa propre clé privée avec la clé publique de l’autre pour obtenir le même secret."
+  },
+  {
+    "question": "Dans un échange Diffie–Hellman, à quoi sert la fonction de dérivation de clé (KDF) ?",
+    "answer": "Elle dérive une clé symétrique utilisable à partir du secret partagé."
+  },
+  {
+    "question": "Comment un attaquant actif s’interpose-t-il dans un échange Diffie–Hellman non authentifié ?",
+    "answer": "Il remplace les clés publiques échangées par les siennes et établit un secret différent avec chaque côté. C’est une attaque de l’intermédiaire (MITM)."
+  },
+  {
+    "question": "Comment une signature peut-elle empêcher la substitution d’une clé publique éphémère ?",
+    "answer": "On vérifie la signature de la clé éphémère avec une clé publique de signature déjà reconnue comme celle de l’autre partie."
+  },
+  {
+    "question": "À quoi sert un certificat de clé publique ?",
+    "answer": "Il lie une clé publique à l’identité de son titulaire. Pour un site web, il indique notamment les noms de domaine couverts."
+  },
+  {
+    "question": "Quel est le rôle d’une autorité de certification (CA) ?",
+    "answer": "Elle vérifie les informations du demandeur puis signe un certificat qui lie sa clé publique à son identité ou à un domaine."
+  },
+  {
+    "question": "Que vérifie-t-on avec la signature de l’autorité sur un certificat ?",
+    "answer": "Que le certificat a bien été signé avec la clé privée de l’autorité et que les informations signées n’ont pas été modifiées."
+  },
+  {
+    "question": "Que gère une infrastructure à clés publiques (PKI) ?",
+    "answer": "Le cycle de vie des certificats : leur création, leur distribution, leur utilisation et leur révocation."
+  },
+  {
+    "question": "Quel standard définit le format des certificats de clé publique utilisés pour HTTPS ?",
+    "answer": "X.509. Un certificat indique notamment le titulaire, sa clé publique, l’émetteur et la période de validité."
+  },
+  {
+    "question": "Un site présente un certificat signé par une autorité de confiance, mais pour un autre domaine. Pourquoi le navigateur doit-il le refuser ?",
+    "answer": "Un certificat doit couvrir le domaine demandé. La signature ne le rend pas valable pour d’autres domaines."
+  },
+  {
+    "question": "À quoi sert une demande de signature de certificat (CSR) ?",
+    "answer": "Elle transmet la clé publique et les informations du demandeur à une autorité pour qu’elle émette un certificat. La clé privée reste chez le demandeur."
+  },
+  {
+    "question": "Que prouve une signature valide sur une demande de certificat (CSR) ?",
+    "answer": "Que la demande est intacte et que son signataire possède la clé privée correspondante. L’autorité vérifie séparément l’identité ou le contrôle du domaine."
+  },
+  {
+    "question": "La clé privée d’un site a été volée, mais son certificat n’a pas expiré. Que peut faire l’autorité de certification ?",
+    "answer": "Révoquer le certificat et publier son statut sans attendre son expiration."
+  },
+  {
+    "question": "Quelle différence y a-t-il entre une CRL et OCSP ?",
+    "answer": "Une CRL est une liste de certificats révoqués. OCSP permet de demander le statut d’un certificat précis."
+  },
+  {
+    "question": "Pourquoi un certificat auto-signé présenté par un site inconnu ne suffit-il pas à prouver son identité ?",
+    "answer": "Le site a signé son propre certificat. Sans confiance établie à l’avance, un imposteur pourrait présenter le sien."
+  },
+  {
+    "question": "Comment un navigateur peut-il faire confiance à un certificat signé par une autorité intermédiaire ?",
+    "answer": "Il vérifie les signatures de proche en proche jusqu’à une autorité racine à laquelle il fait déjà confiance."
+  },
+  {
+    "question": "Pourquoi un navigateur accepte-t-il un certificat racine auto-signé ?",
+    "answer": "La racine figure déjà dans son magasin de confiance ou celui du système. L’auto-signature ne crée pas cette confiance."
+  },
+  {
+    "question": "Quel risque apparaît si une autorité de confiance émet un certificat frauduleux pour un domaine ?",
+    "answer": "Un attaquant peut se faire passer pour le site auprès des clients qui font confiance à cette autorité."
+  },
+  {
+    "question": "Quelle différence y a-t-il entre les formats DER et PEM pour un certificat ?",
+    "answer": "DER représente le certificat en binaire. PEM présente ces données sous forme de texte Base64 entre des délimiteurs BEGIN et END."
+  },
+  {
+    "question": "Comment obtient-on l’empreinte (fingerprint) d’un certificat ?",
+    "answer": "On calcule le haché du certificat encodé en DER. Cette empreinte sert à identifier le certificat."
+  },
+  {
+    "question": "À quoi sert un fichier PKCS#12 ?",
+    "answer": "À regrouper une clé privée et des certificats dans un fichier qui peut en protéger la confidentialité et l’intégrité."
+  },
+  {
+    "question": "À la connexion, on te demande une adresse e-mail puis un mot de passe. Lequel est l’identifiant ?",
+    "answer": "L’adresse e-mail indique de quel compte il s’agit. Le mot de passe sert à prouver que tu le contrôles."
+  },
+  {
+    "question": "À quels types de facteurs correspondent un PIN, une clé physique et une empreinte digitale ?",
+    "answer": "PIN : connaissance. Clé physique : possession. Empreinte : inhérence, c’est-à-dire une caractéristique de la personne."
+  },
+  {
+    "question": "Un site demande un mot de passe et un PIN mémorisé. Est-ce une authentification à deux facteurs ?",
+    "answer": "Non. Les deux sont des facteurs de connaissance. Une carte bancaire et son PIN combinent possession et connaissance."
+  },
+  {
+    "question": "Pourquoi l’authentification multifacteur (MFA) aide-t-elle si un mot de passe est volé ?",
+    "answer": "Le mot de passe seul ne suffit plus. Il faut aussi fournir un autre facteur, par exemple prouver qu’on possède la clé physique enregistrée."
+  },
+  {
+    "question": "À quoi sert la notification reçue sur ton téléphone quand tu te connectes sur un ordinateur ?",
+    "answer": "Elle te permet de confirmer la connexion depuis le téléphone enregistré, via un canal distinct."
+  },
+  {
+    "question": "Comment le Single Sign-On (SSO) permet-il d’ouvrir plusieurs services après une seule connexion ?",
+    "answer": "L’utilisateur se connecte à un fournisseur d’identité (IdP). Les services qui lui font confiance acceptent son assertion d’identité."
+  },
+  {
+    "question": "Quel risque apparaît si plusieurs services dépendent d’un seul fournisseur d’identité ?",
+    "answer": "Le fournisseur devient un point de défaillance unique. Une panne peut bloquer l’accès aux services qui dépendent de lui."
+  },
+  {
+    "question": "Que gère l’IAM (Identity and Access Management) dans une organisation ?",
+    "answer": "Les identités, leur authentification et leurs droits d’accès aux différents services."
+  },
+  {
+    "question": "Chaque application gère ses propres comptes et ses propres règles. Quel est ce modèle IAM ?",
+    "answer": "Le modèle en silos. Les applications sont autonomes, mais les comptes peuvent être dupliqués et les règles diverger."
+  },
+  {
+    "question": "Une seule autorité gère les identités et prend les décisions d’accès. Quel est ce modèle IAM ?",
+    "answer": "Le modèle centralisé. Il facilite l’application de règles cohérentes et crée une dépendance à l’autorité centrale."
+  },
+  {
+    "question": "Plusieurs entités semi-autonomes se répartissent la gestion des identités. Quel est ce modèle IAM ?",
+    "answer": "Le modèle décentralisé. La gestion est répartie, ce qui rend la coordination des règles plus difficile."
+  },
+  {
+    "question": "Deux organisations gardent leurs propres comptes mais reconnaissent leurs identités grâce à des règles communes. Quel est ce modèle IAM ?",
+    "answer": "Le modèle fédéré. Chaque organisation reste autonome et accepte des identités gérées par les partenaires de confiance."
+  },
+  {
+    "question": "Dans un modèle IAM centré sur l’utilisateur, qui décide quelles données sont partagées ?",
+    "answer": "L’utilisateur contrôle ses données et décide à qui il donne accès."
+  },
+  {
+    "question": "Quand un site reçoit ton mot de passe par HTTPS, qu’est-ce qui le protège pendant le trajet ?",
+    "answer": "TLS chiffre les échanges. Le mot de passe reste accessible au service qui le reçoit après déchiffrement."
+  },
+  {
+    "question": "Comment le serveur vérifie-t-il un mot de passe salé sans conserver le mot de passe lui-même ?",
+    "answer": "Il reprend le sel stocké pour ce compte, hache le mot de passe saisi avec ce sel et compare le résultat à l’empreinte enregistrée."
+  },
+  {
+    "question": "Deux personnes ont le même mot de passe. Pourquoi leurs empreintes stockées peuvent-elles être différentes ?",
+    "answer": "Chaque compte utilise un sel (salt) différent. Le sel est stocké avec l’empreinte et n’a pas besoin d’être secret."
+  },
+  {
+    "question": "Une base de mots de passe fuit. Comment un attaquant mène-t-il une attaque par dictionnaire ?",
+    "answer": "Il teste des mots de passe courants : il calcule leurs empreintes avec le sel du compte et les compare à l’empreinte volée."
+  },
+  {
+    "question": "Limiter le nombre de tentatives de connexion freine-t-il un attaquant qui possède déjà la base d’empreintes ?",
+    "answer": "Non. La limite freine les essais en ligne. Avec la base volée, l’attaquant peut tester des candidats hors ligne."
+  },
+  {
+    "question": "Pourquoi utiliser une fonction dédiée comme Argon2 ou bcrypt pour stocker des mots de passe ?",
+    "answer": "Elle rend chaque essai coûteux et utilise un sel. Les devinettes hors ligne prennent plus de temps qu’avec un hachage rapide."
+  },
+  {
+    "question": "Comment un gestionnaire de mots de passe limite-t-il la réutilisation des mots de passe ?",
+    "answer": "Il peut générer et garder un mot de passe unique pour chaque site. L’utilisateur n’a pas à les mémoriser tous."
+  },
+  {
+    "question": "Un site réinitialise ton mot de passe avec un lien envoyé par e-mail. De quoi dépend alors la sécurité de la récupération ?",
+    "answer": "De la sécurité de ta boîte mail. Si quelqu’un la contrôle, il peut utiliser le lien pour changer le mot de passe."
+  },
+  {
+    "question": "Dans une authentification par défi-réponse, comment le client prouve-t-il qu’il possède le secret ?",
+    "answer": "Il utilise le secret pour calculer la réponse au défi. Le serveur vérifie la réponse sans recevoir le secret."
+  },
+  {
+    "question": "Pourquoi le serveur envoie-t-il un nouveau nonce à chaque défi ?",
+    "answer": "La réponse dépend de ce nonce. Une réponse enregistrée lors d’une ancienne connexion ne correspond pas au nouveau défi."
+  },
+  {
+    "question": "Le client signe le défi d’un serveur. Quelle clé le serveur utilise-t-il pour vérifier la réponse ?",
+    "answer": "La clé publique du client. La clé privée sert à signer et reste du côté client."
+  },
+  {
+    "question": "Pourquoi protéger l’enregistrement initial de la clé publique du client ?",
+    "answer": "Sinon, un attaquant peut la remplacer par la sienne. Le serveur accepterait ensuite des signatures produites par l’attaquant."
+  },
+  {
+    "question": "Pourquoi présenter un certificat client ne suffit-il pas pour s’authentifier ?",
+    "answer": "Le certificat relie une identité à une clé publique. Une signature sur un défi prouve que le client possède aussi la clé privée associée."
+  },
+  {
+    "question": "À quoi sert une KDF si la clé privée est stockée chiffrée sur l’appareil ?",
+    "answer": "Elle dérive une clé de déchiffrement à partir du mot de passe. Le client peut ainsi déverrouiller sa clé privée localement."
+  },
+  {
+    "question": "Pourquoi changer d’appareil peut-il bloquer une authentification par signature ?",
+    "answer": "Le nouvel appareil ne possède pas la clé privée de l’ancien. Il faut y transférer la clé de façon sûre ou enregistrer une nouvelle clé."
+  },
+  {
+    "question": "Un attaquant copie un jeton au porteur encore valide. Quel accès peut-il obtenir ?",
+    "answer": "Il peut exercer les droits associés au jeton en le présentant au service. Le fait de le posséder suffit."
+  },
+  {
+    "question": "Pourquoi mettre une date d’expiration sur un jeton d’accès ?",
+    "answer": "Cela limite le temps pendant lequel un jeton volé peut être utilisé."
+  },
+  {
+    "question": "Dans un jeton matériel, où se trouve le secret qui sert à produire les réponses ?",
+    "answer": "Il reste dans le matériel, qui effectue les opérations cryptographiques en interne."
+  },
+  {
+    "question": "Un attaquant a capturé un code OTP déjà accepté. Peut-il l’utiliser pour une nouvelle connexion ?",
+    "answer": "Non. Un mot de passe à usage unique (OTP) est invalidé après son utilisation."
+  },
+  {
+    "question": "Dans le schéma de Lamport, le serveur a stocké p₀. Comment valide-t-il le premier code p₁ ?",
+    "answer": "Il calcule H(p₁) et vérifie qu’il obtient p₀. Si c’est correct, il remplace la valeur stockée par p₁."
+  },
+  {
+    "question": "Pourquoi connaître un code de Lamport ne permet-il pas de calculer le prochain ?",
+    "answer": "Le prochain code est le précédent maillon de la chaîne de hachage. Pour le retrouver, il faudrait inverser le hachage."
+  },
+  {
+    "question": "Comment une appli TOTP et le serveur obtiennent-ils le même code sans se l’envoyer à l’avance ?",
+    "answer": "Ils le calculent à partir du même secret et du même intervalle de temps. Des horloges trop décalées peuvent produire des codes différents."
+  },
+  {
+    "question": "Pourquoi un code envoyé par SMS peut-il arriver chez un attaquant ?",
+    "answer": "Par SIM swapping : l’attaquant fait transférer le numéro de la victime sur une carte SIM qu’il contrôle."
+  },
+  {
+    "question": "Quel est le rôle du moniteur de référence dans le contrôle d’accès ?",
+    "answer": "Il applique la politique d’accès à chaque demande et décide de l’autoriser ou de la refuser. Aucun accès ne doit pouvoir le contourner."
+  },
+  {
+    "question": "Un service lit les dossiers de paie, mais ne les modifie jamais. Quels droits lui donner selon le moindre privilège ?",
+    "answer": "Seulement les droits de lecture nécessaires à sa tâche."
+  },
+  {
+    "question": "Une personne prépare un paiement et une autre doit le valider. Quel principe est appliqué ?",
+    "answer": "La séparation des tâches : on répartit les responsabilités pour qu’une seule personne ne puisse pas mener toute l’opération."
+  },
+  {
+    "question": "Quelles sont les trois parties d’un JWT signé ?",
+    "answer": "L’en-tête (header), les données (payload) et la signature ou le code d’authentification (MAC)."
+  },
+  {
+    "question": "Quelqu’un intercepte un JWT signé mais non chiffré. Peut-il lire son contenu ?",
+    "answer": "Oui. Le Base64URL est un encodage. La signature protège l’intégrité du jeton, pas la confidentialité du contenu."
+  },
+  {
+    "question": "Pourquoi un client renvoie-t-il son JWT avec les requêtes qui suivent la connexion ?",
+    "answer": "Le serveur peut vérifier le jeton à chaque requête sans redemander le mot de passe."
+  },
+  {
+    "question": "Un JWT a une signature valide, mais sa date d’expiration est dépassée. Le serveur doit-il l’accepter ?",
+    "answer": "Non. La signature valide ne prolonge pas la durée de vie du jeton."
+  },
+  {
+    "question": "Lors de l’inscription WebAuthn, quelle partie de la nouvelle paire de clés le serveur enregistre-t-il ?",
+    "answer": "La clé publique. La clé privée reste sous le contrôle de l’authentificateur."
+  },
+  {
+    "question": "Comment WebAuthn prouve-t-il au site que l’utilisateur contrôle sa clé privée ?",
+    "answer": "L’authentificateur signe des données liées au défi du site. Le site vérifie la signature avec la clé publique enregistrée."
+  },
+  {
+    "question": "Quand WebAuthn utilise une empreinte ou un PIN, qu’est-ce qui est envoyé au site ?",
+    "answer": "Une preuve cryptographique signée. L’empreinte ou le PIN sert à vérifier l’utilisateur localement et n’est pas envoyé au site."
+  },
+  {
+    "question": "Dans FIDO2, quel protocole fait dialoguer le navigateur et une clé de sécurité externe ?",
+    "answer": "CTAP (Client to Authenticator Protocol). WebAuthn est l’interface par laquelle le site demande l’authentification."
+  },
+  {
+    "question": "Un site veut lire tes données chez un autre service sans obtenir ton mot de passe. Que lui permet OAuth ?",
+    "answer": "D’obtenir une autorisation limitée pour accéder à ces données. OAuth ne sert pas, à lui seul, à prouver ton identité au site."
+  },
+  {
+    "question": "Dans OAuth, à quoi servent respectivement le code d’autorisation et le jeton d’accès ?",
+    "answer": "Le client échange le code contre un jeton d’accès. Il présente ensuite le jeton au serveur qui protège la ressource."
+  },
+  {
+    "question": "Pourquoi un code d’autorisation OAuth expire-t-il vite et ne sert-il qu’une fois ?",
+    "answer": "Pour limiter le temps pendant lequel un code volé peut servir et empêcher son rejeu après utilisation."
+  },
+  {
+    "question": "Pourquoi un code d’autorisation OAuth expire-t-il vite et ne peut-il servir qu’une fois ?",
+    "answer": "Pour limiter le risque qu’un attaquant récupère le code et le réutilise pour obtenir un jeton."
+  },
+  {
+    "question": "Pourquoi une application mobile ne peut-elle pas garder secret un client_secret intégré dans son code ?",
+    "answer": "Le code est distribué aux utilisateurs. Quelqu’un qui analyse l’application peut en extraire le secret."
+  },
+  {
+    "question": "Avec PKCE, pourquoi un code d’autorisation volé ne suffit-il pas pour obtenir un jeton d’accès ?",
+    "answer": "Le client doit aussi fournir son secret temporaire. Le serveur d’autorisation vérifie que son empreinte correspond à celle liée au code."
+  },
+  {
+    "question": "Pourquoi protéger les connexions du réseau même si les applications authentifient déjà leurs utilisateurs ?",
+    "answer": "L’authentification d’une application vérifie une identité. Elle ne sécurise pas à elle seule les connexions et les liaisons entre les machines du réseau."
+  },
+  {
+    "question": "Un paquet IPv6 voyage dans un paquet IPv4. Quel mécanisme permet ce transport ?",
+    "answer": "L’encapsulation : le paquet IPv6 est placé dans la charge utile du paquet IPv4. C’est un exemple de tunnel."
+  },
+  {
+    "question": "Que veut dire « transparent » dans un tunnel chiffré ?",
+    "answer": "Les applications envoient et reçoivent leurs données normalement. Le tunnel prend en charge le chiffrement et le déchiffrement."
+  },
+  {
+    "question": "Un pare-feu ne regarde que les en-têtes réseau et transport. Pourquoi un tunnel peut-il lui masquer le protocole transporté ?",
+    "answer": "Le pare-feu voit les en-têtes externes. Les paquets du protocole transporté sont dans la charge utile."
+  },
+  {
+    "question": "Qu’apporte TLS quand on passe de HTTP à HTTPS ?",
+    "answer": "Il protège la confidentialité et l’intégrité des échanges et permet au client d’authentifier le serveur."
+  },
+  {
+    "question": "Dans HTTPS, que vérifie le client grâce au certificat du serveur ?",
+    "answer": "Que l’identité du serveur est liée à sa clé publique par une chaîne de confiance reconnue."
+  },
+  {
+    "question": "À quoi sert le handshake TLS avant l’envoi des données ?",
+    "answer": "À convenir des paramètres de sécurité, à authentifier le serveur et à établir les clés symétriques de la session."
+  },
+  {
+    "question": "Dans le Client Hello du cours, quelles informations accompagnent la contribution publique du client à l’échange de clés ?",
+    "answer": "Les suites cryptographiques prises en charge et une valeur aléatoire propre au handshake (nonce)."
+  },
+  {
+    "question": "En TLS 1.3, le serveur demande de réessayer avec un autre groupe. Que fait le client ?",
+    "answer": "Il renvoie un Client Hello avec sa contribution publique pour le groupe demandé."
+  },
+  {
+    "question": "Dans le handshake TLS à clés éphémères, pourquoi effacer les clés privées temporaires après l’échange ?",
+    "answer": "Cela contribue à la confidentialité persistante : voler plus tard la clé privée de long terme ne suffit pas pour déchiffrer les anciennes sessions."
+  },
+  {
+    "question": "Dans le chapitre, à quoi servent les nonces du handshake TLS ?",
+    "answer": "Ils aident notamment à distinguer les exécutions du handshake. Ils ne constituent pas une clé secrète."
+  },
+  {
+    "question": "Après le handshake TLS, pourquoi utiliser un chiffrement authentifié (AEAD) ?",
+    "answer": "Pour rendre les données illisibles sans la clé et détecter leur modification. Chiffrer seul ne garantit pas l’intégrité."
+  },
+  {
+    "question": "Où les données HTTPS redeviennent-elles lisibles quand un proxy assure la terminaison TLS ?",
+    "answer": "Au proxy. Il termine la connexion TLS côté client, puis transmet la requête au serveur interne."
+  },
+  {
+    "question": "Un employé relie son ordinateur au réseau de son entreprise depuis chez lui. De quel type de VPN s’agit-il ?",
+    "answer": "D’un VPN d’accès distant (remote access) : un appareil rejoint un réseau distant."
+  },
+  {
+    "question": "Un VPN relie le réseau d’un bureau à celui d’un autre. De quel type s’agit-il ?",
+    "answer": "D’un VPN site à site (site-to-site) : le tunnel relie deux réseaux."
+  },
+  {
+    "question": "Le tunnel VPN vers un fournisseur chiffre-t-il à lui seul toute la route jusqu’au site consulté ?",
+    "answer": "Non. Il protège le trajet jusqu’à l’extrémité du tunnel. La suite dépend des protections utilisées, par exemple HTTPS."
+  },
+  {
+    "question": "Quelle adresse IP un site voit-il quand la requête sort par le serveur d’un VPN ?",
+    "answer": "L’adresse publique de la sortie VPN. Cela ne signifie pas que le fournisseur du VPN ignore l’adresse du client."
+  },
+  {
+    "question": "Pourquoi un service peut-il lire un fichier envoyé en HTTPS si ce fichier n’est pas chiffré de bout en bout ?",
+    "answer": "Le service est à l’extrémité de la protection TLS. Après déchiffrement, il reçoit le fichier en clair."
+  },
+  {
+    "question": "Qu’est-ce qui empêche un serveur intermédiaire de lire un message chiffré de bout en bout ?",
+    "answer": "Le message est chiffré avant de quitter l’appareil de l’expéditeur. Le serveur ne possède pas la clé qui permet de le lire."
+  },
+  {
+    "question": "Chiffrer le contenu de bout en bout cache-t-il aussi les métadonnées ?",
+    "answer": "Pas par principe. Des informations comme les participants à l’échange peuvent rester visibles selon le service."
+  },
+  {
+    "question": "Pourquoi un serveur a-t-il du mal à modérer le contenu chiffré de bout en bout ?",
+    "answer": "Il n’a pas accès au texte en clair et ne peut donc pas l’inspecter directement."
+  },
+  {
+    "question": "Dans l’exemple de stockage avec une KDF, comment le client retrouve-t-il la clé du fichier ?",
+    "answer": "Il dérive à nouveau la même clé à partir du même secret, puis déchiffre le fichier localement."
+  },
+  {
+    "question": "Dans l’exemple de stockage avec une paire de clés, que chiffre la clé publique du destinataire ?",
+    "answer": "La clé symétrique du fichier. Le fichier lui-même reste chiffré avec cette clé symétrique."
+  },
+  {
+    "question": "Dans ce stockage hybride, si on change seulement de paire de clés, faut-il rechiffrer tous les fichiers ?",
+    "answer": "Non. On peut rechiffrer uniquement leurs clés symétriques. Changer la clé symétrique d’un fichier impose en revanche de rechiffrer ce fichier."
+  },
+  {
+    "question": "Une page accessible après connexion n’est pas indexée par un moteur de recherche. Est-ce forcément du dark web ?",
+    "answer": "Non. Elle relève du deep web, le web non indexé. Le dark web utilise des réseaux d’accès particuliers."
+  },
+  {
+    "question": "Dans le routage en oignon, pourquoi le client négocie-t-il une clé différente avec chaque relais ?",
+    "answer": "Pour superposer les couches de chiffrement et permettre à chaque relais de retirer seulement la sienne."
+  },
+  {
+    "question": "Un circuit suit A → B → C. Quelle couche de l’oignon le client ajoute-t-il en dernier ?",
+    "answer": "Celle de A, le relais d’entrée : elle doit être à l’extérieur pour être retirée en premier."
+  },
+  {
+    "question": "Dans un circuit en oignon, quel relais voit directement l’adresse IP du client ?",
+    "answer": "Le relais d’entrée (guard node). Les relais suivants reçoivent le trafic d’un autre relais."
+  },
+  {
+    "question": "Un navigateur passe par un réseau en oignon mais visite un site en HTTP. Le relais de sortie peut-il lire la requête ?",
+    "answer": "Oui. Après le retrait de la dernière couche, HTTP ne fournit aucun chiffrement supplémentaire entre la sortie et le site."
+  },
+  {
+    "question": "Que sait un relais intermédiaire au sujet du trajet dans un réseau en oignon ?",
+    "answer": "Il connaît son relais précédent et son relais suivant, sans connaître à lui seul tout le trajet."
+  },
+  {
+    "question": "À quoi servent les autorités d’annuaire dans le réseau en oignon présenté au cours ?",
+    "answer": "Elles publient les informations sur les relais disponibles, que le client utilise pour construire un circuit."
+  },
+  {
+    "question": "Quelle différence y a-t-il entre un pare-feu réseau (network-based) et un pare-feu local (host-based) ?",
+    "answer": "Le premier filtre le trafic de plusieurs machines du réseau ; le second protège une seule machine."
+  },
+  {
+    "question": "Quel type de pare-feu applique des règles fixes sur les IP, ports et protocoles sans mémoriser les connexions ?",
+    "answer": "Un pare-feu à filtrage de paquets (packet-filter firewall)."
+  },
+  {
+    "question": "Comment un pare-feu stateful distingue-t-il le retour d’une connexion autorisée d’une nouvelle connexion entrante ?",
+    "answer": "Il maintient une table des connexions et rattache le paquet à un état connu, s’il en existe un."
+  },
+  {
+    "question": "Quel type de pare-feu peut interpréter une requête HTTP pour filtrer selon la ressource demandée ?",
+    "answer": "Un pare-feu applicatif. Il comprend le protocole et peut examiner les en-têtes ou le contenu accessibles."
+  },
+  {
+    "question": "Pourquoi placer un pare-feu applicatif au point de terminaison TLS ?",
+    "answer": "Le contenu y est déchiffré. Le pare-feu peut donc examiner des informations applicatives masquées sur le trajet chiffré."
+  },
+  {
+    "question": "Qu’est-ce qu’un NGFW ajoute au filtrage traditionnel ?",
+    "answer": "Des capacités de contrôle applicatif et de détection d’intrusion, par exemple l’inspection approfondie et la détection de logiciels malveillants."
+  },
+  {
+    "question": "Pourquoi un pare-feu au seul périmètre ne suffit-il pas à protéger un réseau ?",
+    "answer": "Une attaque peut partir de l’intérieur ou d’une machine interne compromise. Le périmètre seul ne limite pas sa propagation interne."
+  },
+  {
+    "question": "Quel principe zero trust applique-t-on à un appareil déjà connecté au réseau interne ?",
+    "answer": "On ne lui accorde pas de confiance ni d’accès supplémentaire par défaut, simplement parce qu’il est à l’intérieur."
+  },
+  {
+    "question": "Quel est l’intérêt de séparer le Wi-Fi invité du réseau des serveurs ?",
+    "answer": "Le filtrage entre segments peut empêcher un appareil du Wi-Fi invité d’atteindre les serveurs, même s’il est compromis."
+  },
+  {
+    "question": "Où place-t-on une DMZ dans la topologie présentée au cours ?",
+    "answer": "Entre le réseau externe et les sous-réseaux internes, avec un filtrage de chaque côté."
+  },
+  {
+    "question": "Que fait un reverse proxy placé dans une DMZ ?",
+    "answer": "Il reçoit les requêtes externes et les relaie vers les serveurs internes autorisés, sans exposer ces serveurs directement."
+  },
+  {
+    "question": "Pourquoi un point d’accès ajouté sans autorisation peut-il affaiblir la segmentation ?",
+    "answer": "Il peut créer un chemin d’accès qui contourne les contrôles prévus entre les réseaux."
+  },
+  {
+    "question": "À quoi sert un scan de découverte Nmap dans un audit du réseau ?",
+    "answer": "À repérer les machines actives dans une plage d’adresses, par exemple pour repérer un équipement inattendu."
+  },
+  {
+    "question": "Un scan envoie un SYN et ne termine pas la poignée de main TCP. De quel scan s’agit-il ?",
+    "answer": "D’un SYN scan. Un TCP connect scan, lui, établit une connexion TCP complète."
+  },
+  {
+    "question": "Que peut apporter SNMP après la découverte d’une machine sur le réseau ?",
+    "answer": "Des informations sur son type ou sa configuration, si l’équipement expose son service de gestion et que l’accès est autorisé."
+  },
+  {
+    "question": "Quel bénéfice de sécurité y a-t-il à désactiver les services et prises réseau inutilisés ?",
+    "answer": "On réduit la surface d’attaque : ces points d’entrée ne peuvent plus servir à exploiter le réseau."
+  },
+  {
+    "question": "Que contrôle 802.1X avant même la connexion à une application ?",
+    "answer": "L’admission de l’appareil ou de l’utilisateur au réseau, via le port du commutateur ou le point d’accès."
+  },
+  {
+    "question": "En 802.1X, qui est le supplicant ?",
+    "answer": "L’appareil client qui demande l’accès au réseau."
+  },
+  {
+    "question": "En 802.1X, qui est l’authenticator ?",
+    "answer": "Le commutateur ou le point d’accès qui relaie l’authentification et contrôle l’accès au réseau."
+  },
+  {
+    "question": "Qui prend la décision d’authentification dans l’architecture 802.1X présentée au cours ?",
+    "answer": "Le serveur d’authentification, généralement RADIUS. Le commutateur ou le point d’accès applique la décision."
+  },
+  {
+    "question": "À quoi correspondent les trois A de AAA dans RADIUS ?",
+    "answer": "Authentication, authorization et accounting : vérifier l’identité, décider des droits et enregistrer l’activité."
+  },
+  {
+    "question": "À quoi sert EAPOL dans un réseau 802.1X ?",
+    "answer": "À transporter les messages EAP sur le réseau local, entre le supplicant et l’authenticator."
+  },
+  {
+    "question": "Dans le scénario EAP-TLS du cours, entre quelles machines s’établit la protection TLS ?",
+    "answer": "Entre le supplicant et le serveur d’authentification. L’authenticator relaie les messages."
+  },
+  {
+    "question": "Comment la vérification du certificat RADIUS aide-t-elle face à un faux point d’accès ?",
+    "answer": "Elle empêche le faux point d’accès de se faire passer pour le serveur légitime sans sa clé privée. Un certificat invalide doit faire échouer la vérification."
+  },
+  {
+    "question": "Dans le déroulé 802.1X du cours, qui ouvre le port réseau après un Access-Accept ?",
+    "answer": "L’authenticator applique la décision. Si l’accès est refusé, le trafic réseau ordinaire reste bloqué."
+  },
+  {
+    "question": "Que fait un résolveur DNS si une réponse en cache est encore valide ?",
+    "answer": "Il peut réutiliser la réponse sans interroger à nouveau les serveurs DNS."
+  },
+  {
+    "question": "Pourquoi un empoisonnement du cache DNS redirige-t-il des connexions vers le mauvais serveur ?",
+    "answer": "Le résolveur conserve une association falsifiée entre le nom légitime et une adresse IP choisie par l’attaquant."
+  },
+  {
+    "question": "Un attaquant envoie une fausse réponse DNS à un résolveur. En quoi cela diffère-t-il d’une modification directe du cache ?",
+    "answer": "Dans le premier cas, le résolveur doit accepter la réponse forgée. Dans le second, l’attaquant altère directement les enregistrements stockés."
+  },
+  {
+    "question": "Comment DNSSEC détecte-t-il une réponse falsifiée pour une zone protégée ?",
+    "answer": "Le résolveur validant contrôle les signatures et la chaîne de confiance. Il rejette les données si la validation échoue."
+  },
+  {
+    "question": "DNSSEC cache-t-il le nom de domaine demandé ?",
+    "answer": "Non. DNSSEC sert à vérifier l’origine et l’intégrité des données DNS, pas à chiffrer les requêtes."
+  },
+  {
+    "question": "Dans l’exemple du cours, d’où part la validation de la chaîne de confiance DNSSEC ?",
+    "answer": "D’une ancre de confiance préconfigurée pour la zone racine."
+  },
+  {
+    "question": "Qui permet au résolveur de faire confiance à la clé d’une zone enfant dans DNSSEC ?",
+    "answer": "La zone parente fournit une preuve signée qui rattache la clé de l’enfant à la chaîne de confiance."
+  },
+  {
+    "question": "Dans le modèle DNSSEC à deux clés, à quoi sert la ZSK ?",
+    "answer": "La Zone Signing Key signe les ensembles d’enregistrements de la zone."
+  },
+  {
+    "question": "Dans le modèle DNSSEC à deux clés, à quoi sert la KSK ?",
+    "answer": "La Key Signing Key sert à authentifier les clés de la zone. Elle fait le lien entre la chaîne de confiance et les clés utilisées dans cette zone."
+  },
+  {
+    "question": "Pourquoi le changement de KSK implique-t-il la zone parente, contrairement à celui de ZSK ?",
+    "answer": "Le parent publie l’empreinte de la KSK de l’enfant. Cette référence doit être mise à jour si la KSK change."
+  },
+  {
+    "question": "Dans la hiérarchie DNS du cours, quels niveaux relient la racine à la zone esi-bru.be ?",
+    "answer": "La racine (.), le domaine de premier niveau .be, puis la zone faisant autorité pour esi-bru.be."
+  }
+]
