@@ -112,9 +112,11 @@ function resourceUrl(resource: Resource): string {
 
 function row(title: string, href: string, resource?: Resource): HTMLLIElement {
   const item = el("li", "panel portal-item");
-  const layout = el("div", "portal-resource-row");
-  const open = link("Ouvrir", href, "button button-small button-outline");
-  open.setAttribute("aria-label", "Ouvrir — " + title);
+  const layout = el("div", "portal-resource-row " + (resource ? "lite-document-row" : "lite-navigation-row"));
+  const label = resource ? "Ouvrir dans un nouvel onglet" : "Ouvrir";
+  const open = link(resource ? label : "", href, "button button-small button-outline");
+  open.setAttribute("aria-label", label + " — " + title);
+  open.append(icon(resource ? "arrowUpRight" : "chevronRight"));
   layout.append(el("span", "portal-resource-name", title));
   if (resource) {
     open.target = "_blank";
@@ -127,7 +129,11 @@ function row(title: string, href: string, resource?: Resource): HTMLLIElement {
     const actions = el("div", "portal-document-actions");
     actions.append(open, download);
     layout.append(actions);
-  } else layout.append(open);
+  } else {
+    open.classList.add("lite-chevron");
+    open.title = label;
+    layout.append(open);
+  }
   item.append(layout);
   return item;
 }
