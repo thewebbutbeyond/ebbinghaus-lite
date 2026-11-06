@@ -21,7 +21,13 @@
 }
 
 .lite-document-row .portal-document-actions {
+  flex-wrap: nowrap;
+  max-width: 100%;
   margin-inline-start: auto;
+}
+
+.lite-document-row .portal-download {
+  flex-shrink: 0;
 }
 
 #portal-main.lite-landing-page {
