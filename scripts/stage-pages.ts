@@ -9,6 +9,11 @@ const paths = new Set<string>();
 for (const institution of catalog) {
   for (const department of institution.departments) {
     for (const course of department.courses) {
+      const updated = new Date(course.updatedOn);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(course.updatedOn) ||
+          !Number.isFinite(updated.getTime()) || updated.toISOString().slice(0, 10) !== course.updatedOn) {
+        throw new Error("Invalid last update date for course: " + course.id);
+      }
       for (const [kind, resources] of [
         ["json", course.decks], ["pdf", [...course.sheets, ...course.corrections]],
       ] as const) {
