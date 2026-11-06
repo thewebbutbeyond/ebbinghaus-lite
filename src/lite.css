@@ -7,6 +7,23 @@
   font-size: 0.875rem;
 }
 
+.lite-navigation-row {
+  flex-wrap: nowrap;
+}
+
+.lite-chevron {
+  flex: 0 0 48px;
+  padding-inline: 0;
+}
+
+.lite-document-row .portal-resource-name {
+  flex: 1 1 12rem;
+}
+
+.lite-document-row .portal-document-actions {
+  margin-inline-start: auto;
+}
+
 #portal-main.lite-landing-page {
   max-width: 100%;
   padding-block-start: 0;
