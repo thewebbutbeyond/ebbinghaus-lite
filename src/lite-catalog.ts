@@ -15,13 +15,14 @@ function resource(folder: "algo" | "secu", id: string, title: string, filename: 
 
 const algorithmiqueTitle = "Algorithmique I";
 const cybersecurityTitle = "Introduction à la cybersécurité";
+export const methodSheetTitle = "Formulaire et méthodes";
 
 const algorithmique: Course = {
   id: "algorithmique-i",
   title: algorithmiqueTitle,
   updatedOn: "2026-11-06",
   decks: [],
-  sheets: [resource("algo", "fiche-methode", algorithmiqueTitle + " · Formulaires et méthodes", "Formulaire-Methodes-Chapitres-1-7.pdf")],
+  sheets: [resource("algo", "fiche-methode", algorithmiqueTitle + " · " + methodSheetTitle, "Formulaire-Methodes-Chapitres-1-7.pdf")],
   corrections: [
     resource("algo", "chapitre-1", "Chapitre 1 · Introduction", "Corrige-Chapitre-1.pdf"),
     resource("algo", "chapitre-2", "Chapitre 2 · Algorithmes linéaires", "Corrige-Chapitre-2.pdf"),
@@ -42,14 +43,14 @@ const cybersecurite: Course = {
   updatedOn: "2026-11-06",
   decks: [
     resource("secu", "revision-complete", cybersecurityTitle + " · Flashcards", "05-revision-complete.json"),
-    resource("secu", "introduction", "0 · Introduction", "00-introduction.json"),
-    resource("secu", "objectifs-et-principes", "1 · Objectifs et principes", "01-objectifs-et-principes.json"),
-    resource("secu", "outils-cryptographiques", "2 · Outils cryptographiques", "02-outils-cryptographiques.json"),
-    resource("secu", "echange-de-cles", "3 · Échange de clés", "03-echange-de-cles.json"),
-    resource("secu", "authentification", "4 · Authentification", "04-authentification.json"),
-    resource("secu", "securite-reseau", "5 · Sécurité réseau", "05-securite-reseau.json"),
+    resource("secu", "introduction", "Chapitre 0 · Introduction", "00-introduction.json"),
+    resource("secu", "objectifs-et-principes", "Chapitre 1 · Objectifs et principes", "01-objectifs-et-principes.json"),
+    resource("secu", "outils-cryptographiques", "Chapitre 2 · Outils cryptographiques", "02-outils-cryptographiques.json"),
+    resource("secu", "echange-de-cles", "Chapitre 3 · Échange de clés", "03-echange-de-cles.json"),
+    resource("secu", "authentification", "Chapitre 4 · Authentification", "04-authentification.json"),
+    resource("secu", "securite-reseau", "Chapitre 5 · Sécurité réseau", "05-securite-reseau.json"),
   ],
-  sheets: [resource("secu", "fiche-methode", cybersecurityTitle + " · Formulaires et méthodes", "Fiche-Methodes-Cybersecurite.pdf")],
+  sheets: [resource("secu", "fiche-methode", cybersecurityTitle + " · " + methodSheetTitle, "Fiche-Methodes-Cybersecurite.pdf")],
   corrections: [
     resource("secu", "2024-01-26", "Examen · janvier 2024", "Corrige-Examen-2024-01-26.pdf"),
     resource("secu", "2025-01-24-b", "Examen · janvier 2025 · Série B", "Corrige-Examen-2025-01-24-b.pdf"),
