@@ -250,7 +250,7 @@ function showCourse(course: Course, href: string, focus: boolean): void {
     const section = el("section", "portal-section");
     section.append(el("h2", "", "Corrigés"));
     const monthName = new Intl.DateTimeFormat("fr-BE", { month: "long", timeZone: "UTC" });
-    for (const [kind, label] of [["chapter", "Chapitres"], ["bilan", "Bilans"], ["examen", "Examens"]] as const) {
+    for (const [kind, label] of [["chapter", "Exercices"], ["bilan", "Bilans"], ["examen", "Examens"]] as const) {
       const entries = course.corrections.filter(entry => entry.kind === kind);
       if (!entries.length) continue;
       const group = el("section", "lite-correction-group");

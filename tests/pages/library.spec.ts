@@ -128,7 +128,7 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
 test("corrections group chapters separately and assessments by type then month across years", async ({ page }) => {
   await page.goto(algo);
   const corrections = page.locator("section.portal-section").filter({ has: page.getByRole("heading", { name: "Corrigés", exact: true }) });
-  await expect(corrections.locator("h3")).toHaveText(["Chapitres", "Bilans"]);
+  await expect(corrections.locator("h3")).toHaveText(["Exercices", "Bilans"]);
   await expect(corrections.locator('[data-correction-kind="chapter"] .portal-resource-name')).toHaveCount(7);
   const bilans = corrections.locator('[data-correction-kind="bilan"]');
   await expect(bilans.locator("h4")).toHaveText(["Novembre"]);
