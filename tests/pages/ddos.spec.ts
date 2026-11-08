@@ -118,7 +118,14 @@ test("media controls separate attack, pause resumes and square reset stays pause
   await page.goto(simulation);
   await page.clock.pauseAt(new Date("2026-11-08T12:01:00Z"));
   const playback = page.getByRole("group", { name: "Lecture de l'exemple" });
-  await expect(playback.getByRole("button")).toHaveText(["Précédent", "Lire", "Suivant", "Recommencer"]);
+  const labels = ["Précédent", "Lire", "Recommencer", "Suivant"];
+  await expect(playback.getByRole("button")).toHaveCount(labels.length);
+  for (const [index, label] of labels.entries()) {
+    const control = playback.getByRole("button").nth(index);
+    await expect(control).toHaveAccessibleName(label);
+    await expect(control).toHaveAttribute("title", label);
+    await expect(control.locator(".action-label")).toBeHidden();
+  }
   for (const control of await page.locator(".ddos-toolbar button").all()) {
     await expect(control.locator("svg[aria-hidden=true]")).toBeVisible();
   }
@@ -140,10 +147,12 @@ test("media controls separate attack, pause resumes and square reset stays pause
   await expect(time(page)).toHaveText("2 s");
   const pauseIcon = await button(page, "Pause").locator("svg").innerHTML();
   expect(pauseIcon).not.toBe(playIcon);
+  await expect(button(page, "Pause")).toHaveAttribute("title", "Pause");
   await button(page, "Pause").click();
   await page.clock.runFor(2000);
   await expect(time(page)).toHaveText("2 s");
   expect(await button(page, "Lire").locator("svg").innerHTML()).toBe(playIcon);
+  await expect(button(page, "Lire")).toHaveAttribute("title", "Lire");
   await button(page, "Lire").click();
   await page.clock.runFor(1000);
   await expect(time(page)).toHaveText("3 s");

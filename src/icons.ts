@@ -13,6 +13,8 @@ const paths = {
   arrowLeft: ["m12 19-7-7 7-7", "M19 12H5"],
   arrowRight: ["m12 5 7 7-7 7", "M5 12h14"],
   // Simple playback and attack symbols drawn for Lite, using the shared SVG style.
+  stepBack: ["M6 4v16", "m18 4-12 8 12 8Z"],
+  stepForward: ["M18 4v16", "m6 4 12 8-12 8Z"],
   play: ["m8 5 11 7-11 7Z"],
   pause: ["M9 5v14", "M15 5v14"],
   stop: ["M6 6h12v12H6Z"],

@@ -2,6 +2,9 @@
 .example-toolbar { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.75rem 1rem; }
 .example-playback { display: flex; flex: 1 1 28rem; flex-wrap: wrap; gap: 0.5rem; }
 .example-toolbar .button { padding-inline: 12px; }
+.example-playback .button { width: 48px; padding-inline: 0; flex: 0 0 48px; }
+.example-playback .action-label { display: none; }
+.example-playback .icon { width: 20px; height: 20px; }
 .example-status { margin-inline-start: auto; color: var(--muted-foreground); }
 .example-clock { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; font-size: 0.875rem; }
 .example-clock output { font-weight: 600; font-variant-numeric: tabular-nums; }
