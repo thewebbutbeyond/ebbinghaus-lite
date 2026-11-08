@@ -44,6 +44,23 @@
   margin: 0;
 }
 
+.lite-deck-divider {
+  width: 100%;
+  margin-block: 0.4rem;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.lite-correction-group, .lite-correction-month {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.lite-correction-group + .lite-correction-group { margin-block-start: 0.75rem; }
+.lite-correction-group h3 { font-size: 1rem; font-weight: 600; }
+.lite-correction-month h4 { font-size: 0.875rem; font-weight: 500; color: var(--muted-foreground); }
+
 .lite-navigation-row {
   flex-wrap: nowrap;
 }

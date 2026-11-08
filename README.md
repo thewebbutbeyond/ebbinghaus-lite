@@ -48,6 +48,7 @@ reste accessible sans compte.
 - [Bibliothèque : architecture et passage à Pages](docs/bibliotheque-pages.md)
 - [Accès aux archives : chiffrement, mise à jour et limites](docs/acces-archives.md)
 - [Exemple interactif DDoS : utilisation et modèle](docs/simulation-ddos.md)
+- [Chapitre 1 : cookie de session volé, scytale et phishing](docs/exemples-chapitre-1.md)
 - [Guide technique de l’importateur](docs/guide-technique.md)
 - [Expertise et décisions d’ingénierie](docs/jugement-technique.md)
 - [Guide du prototype privé](docs/portail-local.md)

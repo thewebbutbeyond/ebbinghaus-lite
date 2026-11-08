@@ -1,14 +1,13 @@
 import { advance, configure, createTimeline, current, MAX_TIME, previous, type Settings, type Tally } from "./ddos.ts";
 import { renderDdosScene } from "./ddos-scene.ts";
-import { icon } from "./icons.ts";
+import { createPlayback } from "./example-playback.ts";
 import { action, el } from "./review-view.ts";
 import "./ddos.css";
 
-export function createDdosView(signal: AbortSignal): HTMLElement {
+export function createDdosView(signal: AbortSignal, pageTitle: string): HTMLElement {
   let timeline = createTimeline();
-  let timer: ReturnType<typeof setInterval> | undefined;
-  const page = el("section", "portal-page ddos-view");
-  page.append(el("h1", "", "DDoS"), el("p", "ddos-intro",
+  const page = el("section", "portal-page example-view ddos-view");
+  page.append(el("h1", "", pageTitle), el("p", "ddos-intro",
     "Une attaque peut saturer le serveur et retarder les requêtes normales."));
 
   const stage = el("div", "panel ddos-stage");
@@ -17,27 +16,22 @@ export function createDdosView(signal: AbortSignal): HTMLElement {
   legend.append(el("span", "ddos-normal-key", "Trafic normal"), el("span", "ddos-attack-key", "Trafic d'attaque"));
   stage.append(scene, legend);
 
-  const transport = el("div", "ddos-toolbar");
-  const playback = el("div", "ddos-playback");
-  playback.setAttribute("role", "group");
-  playback.setAttribute("aria-label", "Lecture de l'exemple");
-  const play = action("Lire", "ddos-play", "button-primary", "play");
-  const back = action("Précédent", "ddos-previous", "button-outline", "arrowLeft");
-  const forward = action("Suivant", "ddos-next");
-  forward.append(icon("arrowRight"));
-  const reset = action("Recommencer", "ddos-reset", "button-outline", "stop");
+  const playback = createPlayback(signal, {
+    prefix: "ddos",
+    position: () => ({ first: timeline.cursor === 0, last: current(timeline).time >= MAX_TIME }),
+    next: () => { timeline = advance(timeline); render(); },
+    previous: () => { timeline = previous(timeline); render(); },
+    reset: () => { timeline = createTimeline(); render(); },
+  });
   const attack = action("Lancer l'attaque", "ddos-attack", "button-outline ddos-attack-action", "swords");
-  playback.append(back, play, forward, reset);
-  transport.append(playback, attack);
+  playback.element.append(attack);
 
   const clock = el("div", "ddos-clock");
   const time = el("output");
   time.dataset.ddosTime = "";
   time.setAttribute("aria-label", "Temps simulé");
   time.setAttribute("aria-live", "off");
-  const status = el("span", "ddos-status");
-  status.setAttribute("role", "status");
-  clock.append(el("span", "", "Temps simulé : "), time, status);
+  clock.append(el("span", "", "Temps simulé : "), time, playback.status);
 
   const settings = el("div", "panel ddos-settings");
   const inputs = new Map<keyof Omit<Settings, "attack">, { input: HTMLInputElement; output: HTMLOutputElement }>();
@@ -65,7 +59,7 @@ export function createDdosView(signal: AbortSignal): HTMLElement {
     settings.append(group);
     inputs.set(key, { input, output });
     input.addEventListener("input", () => {
-      pause();
+      playback.pause();
       timeline = configure(timeline, { [key]: input.valueAsNumber });
       render();
     }, { signal });
@@ -103,7 +97,7 @@ export function createDdosView(signal: AbortSignal): HTMLElement {
   }
   table.append(head, body);
 
-  const article = el("article", "ddos-article");
+  const article = el("article", "example-article ddos-article");
   article.setAttribute("aria-labelledby", "ddos-explanation-title");
   const title = el("h2", "", "Comprendre l'attaque DDoS");
   title.id = "ddos-explanation-title";
@@ -149,27 +143,13 @@ export function createDdosView(signal: AbortSignal): HTMLElement {
   source.rel = "noopener noreferrer";
   reference.append(source);
   article.append(reference);
-  page.append(stage, clock, transport, settings, pending, table, article);
+  page.append(stage, clock, playback.element, settings, pending, table, article);
 
   function updateTransport(): void {
     const end = current(timeline).time >= MAX_TIME;
-    const label = timer === undefined ? "Lire" : "Pause";
-    if (play.querySelector(".action-label")!.textContent !== label) {
-      play.querySelector(".action-label")!.textContent = label;
-      play.querySelector("svg")!.replaceWith(icon(timer === undefined ? "play" : "pause"));
-    }
-    play.disabled = forward.disabled = end;
+    playback.update();
     attack.disabled = end;
     for (const { input } of inputs.values()) input.disabled = end;
-    back.disabled = timeline.cursor === 0;
-    const text = end ? "Terminé" : timer === undefined ? "En pause" : "Lecture";
-    if (status.textContent !== text) status.textContent = text;
-  }
-
-  function pause(): void {
-    if (timer !== undefined) clearInterval(timer);
-    timer = undefined;
-    updateTransport();
   }
 
   function render(): void {
@@ -199,36 +179,11 @@ export function createDdosView(signal: AbortSignal): HTMLElement {
     updateTransport();
   }
 
-  play.addEventListener("click", () => {
-    if (timer !== undefined) pause();
-    else if (!signal.aborted && !document.hidden && current(timeline).time < MAX_TIME) {
-      timer = setInterval(() => {
-        timeline = advance(timeline);
-        if (current(timeline).time >= MAX_TIME) pause();
-        render();
-      }, 1000);
-      updateTransport();
-    }
-  }, { signal });
-  for (const [button, transition] of [[back, previous], [forward, advance]] as const) {
-    button.addEventListener("click", () => {
-      pause();
-      timeline = transition(timeline);
-      render();
-    }, { signal });
-  }
-  reset.addEventListener("click", () => {
-    pause();
-    timeline = createTimeline();
-    render();
-  }, { signal });
   attack.addEventListener("click", () => {
-    pause();
+    playback.pause();
     timeline = configure(timeline, { attack: !timeline.settings.attack });
     render();
   }, { signal });
-  document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); }, { signal });
-  signal.addEventListener("abort", pause, { once: true });
   render();
   return page;
 }
