@@ -51,6 +51,8 @@ export class ArchiveAccess {
   async restore(id: string): Promise<boolean> {
     if (this.isOpen(id)) return true;
     try {
+      const prefix = "ebbinghaus-lite:archive:" + id + ":";
+      if (!Object.keys(sessionStorage).some(key => key.startsWith(prefix))) return false;
       const archive = await this.load(id);
       const storageKey = archiveStorageKey(id, archive.salt);
       const key = sessionStorage.getItem(storageKey);

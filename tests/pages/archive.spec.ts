@@ -7,6 +7,18 @@ const department = root + "#/he2b/esi";
 const cyber = department + "/introduction-a-la-cybersecurite";
 const sheet = "cours/algo/Formulaire-Methodes-Chapitres-1-7.pdf";
 
+test("a fresh direct link shows its gate without waiting for the encrypted archive", async ({ page }) => {
+  const downloads: string[] = [];
+  await page.route("**/archives/he2b-esi.enc.json", route => {
+    downloads.push(route.request().url());
+    return route.abort();
+  });
+  await page.goto(cyber);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Accéder à l’archive");
+  await expect(page.getByLabel("Mot de passe", { exact: true })).toBeVisible();
+  expect(downloads).toEqual([]);
+});
+
 test("public navigation leads to the archive gate, which rejects a wrong password and accepts keyboard login", async ({ page }, info) => {
   const errors: string[] = [];
   const posts: string[] = [];
