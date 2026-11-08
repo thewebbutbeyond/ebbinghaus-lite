@@ -1,6 +1,7 @@
 import { expect, test, type Locator } from "@playwright/test";
 import { readFile, readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { archive, authorizeTab, contents, password, sourceBytes } from "../archive-fixture.ts";
 
 const root = "/ebbinghaus-lite/";
 const esi = root + "#/he2b/esi";
@@ -10,6 +11,10 @@ const introduction = cyber + "/paquets/introduction";
 const introSource = "cours/secu/00-introduction.json";
 const sheetPath = "cours/algo/Formulaire-Methodes-Chapitres-1-7.pdf";
 const correctionPath = "cours/algo/Corrige-Chapitre-2.pdf";
+
+test.beforeEach(async ({ page }, info) => {
+  if (!info.title.startsWith("the separate importer")) await authorizeTab(page);
+});
 
 async function corner(locator: Locator): Promise<{ x: number; y: number }> {
   await expect(locator).toBeVisible();
@@ -54,7 +59,7 @@ test("the welcome page previews a card without leaving and links to the catalogu
   await expect(page).toHaveURL(homeUrl);
   const origin = new URL(page.url()).origin;
   expect(requests.every((url) => new URL(url).origin === origin &&
-    new URL(url).pathname.startsWith(root) && !new URL(url).pathname.includes("/api/"))).toBe(true);
+    (url.startsWith("blob:") || new URL(url).pathname.startsWith(root)) && !new URL(url).pathname.includes("/api/"))).toBe(true);
 });
 
 test("institutions, breadcrumbs, reload, browser back, and both courses", async ({ page }, info) => {
@@ -100,14 +105,15 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
   await expect(page.getByRole("link", { name: "Ouvrir — Introduction à la cybersécurité · Flashcards", exact: true }))
     .toHaveAttribute("href", /\/paquets\/revision-complete$/);
   await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Examen · juin 2025 · Série A" }))
-    .toHaveAttribute("href", /Corrige-Examen-2025-06-13\.pdf$/);
+    .toHaveAttribute("href", /^blob:/);
   await expect(page.getByRole("link", { name: "Ouvrir dans un nouvel onglet — Examen · janvier 2026 · Série A" }))
-    .toHaveAttribute("href", /Corrige-Examen-2026-01-23-a\.pdf$/);
+    .toHaveAttribute("href", /^blob:/);
   await page.getByRole("link", { name: /^ebbinghaus lite/ }).click();
   await expect(heading).toHaveText("Révise tes cours");
 
   // Open a bookmarked course without first traversing the catalogue.
   const bookmark = await page.context().newPage();
+  await authorizeTab(bookmark);
   await bookmark.goto(cyber);
   await expect(bookmark.getByRole("heading", { level: 1 })).toHaveText("Introduction à la cybersécurité");
   await bookmark.reload();
@@ -121,7 +127,7 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
 
 test("a published deck uses the shared review flow and keeps its back control", async ({ page }) => {
   const cards: { question: string; answer: string }[] =
-    JSON.parse(await readFile(join("publication", introSource), "utf8"));
+    JSON.parse(sourceBytes(introSource).toString("utf8"));
   expect(cards.length).toBeGreaterThan(1);
   const browserErrors: string[] = [];
   const urls: string[] = [];
@@ -130,10 +136,8 @@ test("a published deck uses the shared review flow and keeps its back control", 
   await page.goto(cyber);
   const back = page.locator("#lite-back");
   const position = await corner(back);
-  const publishedResponse = page.waitForResponse((response) => new URL(response.url()).pathname === root + introSource);
   await page.getByRole("link", { name: "Ouvrir — Chapitre 0 · Introduction", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(introduction + "$"));
-  expect((await publishedResponse).ok()).toBe(true);
   await expect(back).toHaveText("Retour au cours");
   const stable = async () => {
     expect(await corner(back)).toEqual(position);
@@ -163,7 +167,7 @@ test("a published deck uses the shared review flow and keeps its back control", 
   expect(urls.length).toBeGreaterThan(1);
   const origin = new URL(page.url()).origin;
   expect(urls.every((url) => new URL(url).origin === origin &&
-    new URL(url).pathname.startsWith(root) && !new URL(url).pathname.includes("/api/"))).toBe(true);
+    (url.startsWith("blob:") || new URL(url).pathname.startsWith(root)) && !new URL(url).pathname.includes("/api/"))).toBe(true);
 });
 
 test("PDFs open in a new tab and download with their published bytes", async ({ page }) => {
@@ -172,20 +176,27 @@ test("PDFs open in a new tab and download with their published bytes", async ({ 
     const sectionLocator = page.locator("section.portal-section").filter({
       has: page.getByRole("heading", { name: section }),
     });
-    const url = new URL(root + path, page.url()).href;
-    const open = sectionLocator.locator('a[target="_blank"][href="' + root + path + '"]');
-    const inline = page.context().waitForEvent("response", { predicate: (response) => response.url() === url });
+    const filename = path.split("/").at(-1)!;
+    const downloadLink = sectionLocator.locator('a[download="' + filename + '"]');
+    const url = await downloadLink.getAttribute("href");
+    expect(url).toMatch(/^blob:/);
+    const open = sectionLocator.locator('a[target="_blank"][href="' + url + '"]');
+    const document = await page.evaluate(async (url) => {
+      const response = await fetch(url!);
+      return { type: response.headers.get("Content-Type"), bytes: [...new Uint8Array(await response.arrayBuffer())] };
+    }, url);
+    expect(document.type).toBe("application/pdf");
+    expect(Buffer.from(document.bytes)).toEqual(sourceBytes(path));
     const popup = page.waitForEvent("popup");
     await open.click();
-    const [opened, response] = await Promise.all([popup, inline]);
-    expect(response.ok()).toBe(true);
-    expect(response.headers()["content-type"]).toMatch(/^application\/pdf/);
+    const opened = await popup;
+    await expect(opened).toHaveURL(url!);
     await opened.close();
     const download = page.waitForEvent("download");
-    await sectionLocator.locator('a[download][href="' + root + path + '"]').click();
+    await downloadLink.click();
     const result = await download;
     expect(result.suggestedFilename()).toBe(path.split("/").at(-1));
-    expect(await readFile((await result.path())!)).toEqual(await readFile(join("publication", path)));
+    expect(await readFile((await result.path())!)).toEqual(sourceBytes(path));
   }
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Algorithmique I");
 });
@@ -207,31 +218,32 @@ test("the separate importer still reads a local deck without an upload", async (
     /^\/ebbinghaus-lite\/(?:importer\/|assets\/[^/]+)$/.test(new URL(url).pathname))).toBe(true);
 });
 
-test("the Pages artifact contains exactly the reviewed file set and no private entry point", async ({ request }, info) => {
+test("the Pages artifact contains only encrypted course files and no private entry point", async ({ request }, info) => {
   test.skip(info.project.name !== "desktop", "The artifact and server paths are identical on mobile.");
-  const publishedIndex = await readFile("publication/cours/index.html", "utf8");
-  const reviewed = Array.from(publishedIndex.matchAll(/href="\.\/(algo|secu)\/([^"]+\.(?:pdf|json))"/g),
-    (match) => "cours/" + match[1] + "/" + match[2]).sort();
+  const reviewed = Object.keys(contents.files).sort();
   expect(reviewed.filter((file) => file.endsWith(".pdf"))).toHaveLength(17);
   expect(reviewed.filter((file) => file.endsWith(".json"))).toHaveLength(7);
   const entries = await readdir("dist-pages", { recursive: true, withFileTypes: true });
   const files = entries.filter((entry) => !entry.isDirectory()).map((entry) =>
     join(entry.parentPath, entry.name).slice("dist-pages/".length)).sort();
   expect(entries.every((entry) => entry.isDirectory() || entry.isFile())).toBe(true);
-  expect(files.filter((file) => file.startsWith("cours/"))).toEqual(reviewed);
-  expect(files.filter((file) => !file.startsWith("cours/") && !/^assets\/[\w.-]+\.(js|css)$/.test(file)))
-    .toEqual(["LUCIDE-LICENSE.txt", "importer/index.html", "index.html"]);
+  expect(files.filter((file) => file.startsWith("cours/") || /\.(pdf|map)$/.test(file))).toEqual([]);
+  expect(files.filter((file) => !/^assets\/[\w.-]+\.(js|css)$/.test(file)))
+    .toEqual(["LUCIDE-LICENSE.txt", "STATICRYPT-LICENSE.txt", "archives/he2b-esi.enc.json", "importer/index.html", "index.html"]);
+  const encryptedResponse = await request.get(root + "archives/he2b-esi.enc.json");
+  expect(await encryptedResponse.json()).toEqual(archive);
   for (const file of reviewed) {
     const response = await request.get(root + file);
-    expect(response.ok(), file).toBe(true);
-    expect(await response.body(), file).toEqual(await readFile(join("publication", file)));
+    expect(response.status(), file).toBe(404);
   }
+  for (const file of files) expect((await readFile(join("dist-pages", file), "utf8")).includes(password), file).toBe(false);
   for (const file of files.filter((path) => /\.(js|html|css)$/.test(path))) {
     const source = await readFile(join("dist-pages", file), "utf8");
     expect(source).not.toMatch(/\/api\/(courses|session)|passwordHash|\.portal-data\.local|alice@example\.test|balise violette/);
   }
   for (const path of ["/ebbinghaus-viewer/", "/api/session", root + "api/courses", root + "he2b/esi/",
-    root + "portal/", root + "cours/", root + ".portal-data.local/manifest.json", root + ".omx/lite-pages.md"]) {
+    root + "portal/", root + "cours/", root + ".portal-data.local/manifest.json", root + ".omx/lite-pages.md",
+    root + ".env.archive.local", root + ".archive-materials.local/" + sheetPath]) {
     expect((await request.get(path)).status(), path).toBe(404);
   }
 });

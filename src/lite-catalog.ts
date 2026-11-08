@@ -8,7 +8,7 @@ export type Course = Named & Readonly<{
   corrections: readonly Resource[];
   simulations?: readonly Simulation[];
 }>;
-export type Department = Named & Readonly<{ courses: readonly Course[] }>;
+export type Department = Named & Readonly<{ archive: string; courses: readonly Course[] }>;
 export type Institution = Named & Readonly<{ departments: readonly Department[] }>;
 
 function resource(folder: "algo" | "secu", id: string, title: string, filename: string): Resource {
@@ -66,5 +66,5 @@ const cybersecurite: Course = {
 export const catalog: readonly Institution[] = [{
   id: "he2b",
   title: "HE2B",
-  departments: [{ id: "esi", title: "ESI", courses: [algorithmique, cybersecurite] }],
+  departments: [{ id: "esi", title: "ESI", archive: "he2b-esi", courses: [algorithmique, cybersecurite] }],
 }];
