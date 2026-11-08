@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { authorizeTab } from "../archive-fixture.ts";
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
@@ -10,6 +11,8 @@ const button = (page: Page, name: string | RegExp) => page.getByRole("button", {
 const next = (page: Page) => button(page, "Suivant").click();
 const attack = (page: Page) => button(page, /Lancer l.attaque/).click();
 const stopAttack = (page: Page) => button(page, /Arrêter l.attaque/).click();
+
+test.beforeEach(async ({ page }) => { await authorizeTab(page); });
 
 async function counts(page: Page, metric: string, expected: readonly number[]): Promise<void> {
   await expect(page.locator(`[data-metric="${metric}"] td[data-kind]`))
