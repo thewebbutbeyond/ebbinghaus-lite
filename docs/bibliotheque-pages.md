@@ -16,7 +16,7 @@ Un lien profond passe par le même déverrouillage avant de rendre sa page.
 Le logo revient à l’accueil. Une clé dérivée dans `sessionStorage` permet
 les rechargements dans le même onglet.
 
-Les corrigés sont regroupés par type (chapitres, bilans, examens), puis les
+Les corrigés sont regroupés par type (exercices, bilans, examens), puis les
 évaluations par mois, toutes années confondues. Le catalogue indique le type
 et le mois explicitement ; les titres ne servent pas à déduire ces groupes.
 Le champ `scope` d’un paquet distingue le cours complet des chapitres ; une
