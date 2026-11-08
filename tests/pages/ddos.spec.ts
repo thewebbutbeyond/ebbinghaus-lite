@@ -38,15 +38,15 @@ test("DDoS is discoverable only in cybersecurity and uses Lite navigation", asyn
   await expect(page.getByRole("heading", { name: "Exemples interactifs" })).toBeVisible();
   const back = page.locator("#lite-back");
   const before = await back.boundingBox();
-  await page.getByRole("link", { name: "Ouvrir — DDoS", exact: true }).click();
+  await page.getByRole("link", { name: "Ouvrir — Chapitre 1 • DDoS", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(simulation + "$"));
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("DDoS");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Chapitre 1 • DDoS");
   await expect(back).toHaveText("Retour au cours");
   const after = await back.boundingBox();
   expect(after?.x).toBe(before?.x);
   expect(after?.y).toBe(before?.y);
   if (info.project.name === "desktop") {
-    await expect(page.locator('#lite-breadcrumbs [aria-current="page"]')).toHaveText("DDoS");
+    await expect(page.locator('#lite-breadcrumbs [aria-current="page"]')).toHaveText("Chapitre 1 • DDoS");
     await expect(page.locator("#lite-breadcrumbs").getByRole("link", { name: "Introduction à la cybersécurité" }))
       .toHaveAttribute("href", cyber.slice(root.length));
   }

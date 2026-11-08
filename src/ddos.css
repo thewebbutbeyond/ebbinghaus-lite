@@ -41,10 +41,6 @@
 .ddos-attack-key::before { transform: rotate(45deg); }
 .ddos-clock { font-size: 0.875rem; gap: 0.5rem; }
 .ddos-clock output { font-variant-numeric: tabular-nums; font-weight: 600; }
-.ddos-status { margin-inline-start: auto; }
-.ddos-toolbar { align-items: flex-start; gap: 0.75rem 1rem; }
-.ddos-toolbar .button { padding-inline: 12px; }
-.ddos-playback { display: flex; flex: 1 1 28rem; flex-wrap: wrap; gap: 0.5rem; }
 .ddos-attack-action { margin-inline-start: auto; }
 .ddos-attack-action .icon { color: var(--ddos-attack); }
 .ddos-view button:disabled { cursor: default; }
@@ -60,19 +56,10 @@
 .ddos-metrics th, .ddos-metrics td { padding: 0.65rem 0.4rem; border-bottom: 1px solid var(--border); text-align: end; }
 .ddos-metrics th:first-child { text-align: start; }
 .ddos-metrics thead { color: var(--muted-foreground); }
-.ddos-article { display: grid; gap: 1.5rem; max-width: 70ch; padding-block-start: 2rem; margin-block-start: 1rem; border-top: 1px solid var(--border); }
-.ddos-article section { display: grid; gap: 0.65rem; }
-.ddos-article h2 { font-size: 1.5rem; }
-.ddos-article h3 { font-size: 1.125rem; font-weight: 600; }
-.ddos-article p { line-height: 1.75; }
 .ddos-article .ddos-equation { padding: 1rem; border-radius: var(--radius); background: var(--secondary); text-align: center; font-size: 1.125rem; font-variant-numeric: tabular-nums; }
 .ddos-assumptions, .ddos-reference { font-size: 0.875rem; }
 .ddos-reference a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
 
 @media (min-width: 48rem) {
   .ddos-settings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ddos-view *, .ddos-view *::before, .ddos-view *::after { animation: none; transition: none; }
 }

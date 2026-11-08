@@ -125,6 +125,48 @@ test("institutions, breadcrumbs, reload, browser back, and both courses", async 
   await bookmark.close();
 });
 
+test("corrections group chapters separately and assessments by type then month across years", async ({ page }) => {
+  await page.goto(algo);
+  const corrections = page.locator("section.portal-section").filter({ has: page.getByRole("heading", { name: "Corrigés", exact: true }) });
+  await expect(corrections.locator("h3")).toHaveText(["Chapitres", "Bilans"]);
+  await expect(corrections.locator('[data-correction-kind="chapter"] .portal-resource-name')).toHaveCount(7);
+  const bilans = corrections.locator('[data-correction-kind="bilan"]');
+  await expect(bilans.locator("h4")).toHaveText(["Novembre"]);
+  await expect(bilans.locator('[data-month="11"] .portal-resource-name')).toHaveText([
+    "Bilan · novembre 2023", "Bilan · novembre 2024", "Bilan · novembre 2025",
+  ]);
+  await expect(corrections.getByRole("link", { name: /^Ouvrir dans un nouvel onglet/ })).toHaveCount(10);
+  await page.goto(cyber);
+  await expect(corrections.locator("h3")).toHaveText(["Examens"]);
+  await expect(corrections.locator("h4")).toHaveText(["Janvier", "Juin", "Septembre"]);
+  await expect(corrections.locator('[data-month="1"] .portal-resource-name')).toHaveText([
+    "Examen · janvier 2024", "Examen · janvier 2025 · Série B", "Examen · janvier 2026 · Série A",
+  ]);
+  await expect(corrections.locator('[data-month="6"] .portal-resource-name')).toHaveText(["Examen · juin 2025 · Série A"]);
+  await expect(corrections.locator('[data-month="9"] .portal-resource-name')).toHaveText(["Examen · septembre 2025 · Série A"]);
+  const links = corrections.getByRole("link", { name: /^Ouvrir dans un nouvel onglet/ });
+  await expect(links).toHaveCount(5);
+  for (const link of await links.all()) await expect(link).toHaveAttribute("href", /^blob:/);
+});
+
+test("a thin separator distinguishes the complete flashcard deck from chapter decks", async ({ page }) => {
+  await page.goto(cyber);
+  const flashcards = page.locator("section.portal-section").filter({ has: page.getByRole("heading", { name: "Flashcards", exact: true }) });
+  await expect(flashcards).toBeVisible();
+  expect(await flashcards.locator(":scope > *").evaluateAll(elements => elements.map(element => element.tagName)))
+    .toEqual(["H2", "UL", "HR", "UL"]);
+  await expect(flashcards.locator("ul").first().locator(".portal-resource-name")).toHaveText(["Introduction à la cybersécurité · Flashcards"]);
+  await expect(flashcards.locator("ul").last().locator(".portal-resource-name")).toHaveText([
+    "Chapitre 0 · Introduction", "Chapitre 1 · Objectifs et principes", "Chapitre 2 · Outils cryptographiques",
+    "Chapitre 3 · Échange de clés", "Chapitre 4 · Authentification", "Chapitre 5 · Sécurité réseau",
+  ]);
+  const divider = flashcards.getByRole("separator");
+  await expect(divider).toBeVisible();
+  expect(await divider.evaluate(element => getComputedStyle(element).borderTopWidth)).toBe("1px");
+  await page.goto(algo);
+  await expect(page.getByRole("separator")).toHaveCount(0);
+});
+
 test("a published deck uses the shared review flow and keeps its back control", async ({ page }) => {
   const cards: { question: string; answer: string }[] =
     JSON.parse(sourceBytes(introSource).toString("utf8"));
