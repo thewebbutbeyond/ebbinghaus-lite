@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 import { icon } from "./icons.ts";
+import { ArchiveAccess } from "./archive-access.ts";
+import { ArchivePasswordError } from "./archive.ts";
 import { createDdosView } from "./ddos-view.ts";
 import { parseDeck } from "./import.ts";
 import { catalog, methodSheetTitle, type Course, type Resource, type Simulation } from "./lite-catalog.ts";
@@ -9,6 +11,7 @@ import { restart, type Session } from "./session.ts";
 type Named = Readonly<{ id: string; title: string }>;
 type Crumb = Readonly<{ title: string; href: string }>;
 type Route = { kind: "landing" } | { kind: "list"; crumbs: Crumb[]; entries: readonly Named[] } |
+  { kind: "archive"; crumbs: Crumb[]; archive: string } |
   { kind: "course"; crumbs: Crumb[]; course: Course } |
   { kind: "deck"; crumbs: Crumb[]; resource: Resource } |
   { kind: "simulation"; crumbs: Crumb[]; simulation: Simulation } |
@@ -22,6 +25,10 @@ const breadcrumbs = document.querySelector<HTMLElement>("#lite-breadcrumbs")!;
 const restartDialog = document.querySelector<HTMLDialogElement>("#lite-restart")!;
 const home: Crumb = { title: "Institutions", href: "#/" };
 const courseDate = new Intl.DateTimeFormat("fr-BE", { dateStyle: "long", timeZone: "UTC" });
+const archiveAccess = new ArchiveAccess();
+const resourceArchives = new Map(catalog.flatMap(institution => institution.departments.flatMap(department =>
+  department.courses.flatMap(course => [...course.decks, ...course.sheets, ...course.corrections]
+    .map(resource => [resource.path, department.archive] as const)))));
 const institutions = catalog.flatMap((institution) => {
   const departments = institution.departments.flatMap((department) => {
     const courses = department.courses.filter((course) =>
@@ -52,6 +59,7 @@ function readRoute(): Route {
   const department = institution.departments.find(({ id }) => id === parts[1]);
   if (!department) return missing();
   add(department, 2);
+  if (!archiveAccess.isOpen(department.archive)) return { kind: "archive", crumbs, archive: department.archive };
   if (parts.length === 2) return { kind: "list", crumbs, entries: department.courses };
   const course = department.courses.find(({ id }) => id === parts[2]);
   if (!course) return missing();
@@ -118,7 +126,52 @@ function show(content: HTMLElement, focus = false): void {
 }
 
 function resourceUrl(resource: Resource): string {
-  return import.meta.env.BASE_URL + resource.path;
+  return archiveAccess.resourceUrl(resourceArchives.get(resource.path)!, resource.path);
+}
+
+function showArchive(id: string, signal: AbortSignal, focus: boolean): void {
+  const page = screen("Accéder à l’archive", true);
+  const form = el("form", "lite-archive-form");
+  const label = el("label", "", "Mot de passe");
+  label.htmlFor = "archive-password";
+  const input = el("input");
+  input.id = "archive-password";
+  input.name = "password";
+  input.type = "password";
+  input.autocomplete = "current-password";
+  input.required = true;
+  input.setAttribute("aria-describedby", "archive-error");
+  const error = el("p", "lite-archive-error");
+  error.id = "archive-error";
+  error.setAttribute("role", "alert");
+  const submit = el("button", "button button-primary", "Accéder");
+  submit.type = "submit";
+  form.append(label, input, error, submit);
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (submit.disabled) return;
+    submit.disabled = input.disabled = true;
+    error.textContent = "";
+    input.removeAttribute("aria-invalid");
+    submit.textContent = "Ouverture…";
+    try {
+      await archiveAccess.unlock(id, input.value);
+      input.value = "";
+      if (!signal.aborted) await openRoute(true);
+    } catch (failure) {
+      if (signal.aborted) return;
+      error.textContent = failure instanceof ArchivePasswordError
+        ? "Mot de passe incorrect." : "Impossible d’ouvrir l’archive. Réessaie.";
+      input.setAttribute("aria-invalid", "true");
+      input.disabled = false;
+      input.focus();
+    } finally {
+      submit.disabled = input.disabled = false;
+      submit.textContent = "Accéder";
+    }
+  });
+  page.append(form);
+  show(page, focus);
 }
 
 function row(title: string, href: string, resource?: Resource): HTMLLIElement {
@@ -197,12 +250,16 @@ async function openRoute(focus = false): Promise<void> {
   const { signal } = navigation;
   deck = null;
   if (restartDialog.open) restartDialog.close();
-  const route = readRoute();
+  let route = readRoute();
+  if (route.kind === "archive") {
+    if (await archiveAccess.restore(route.archive)) route = readRoute();
+    if (signal.aborted) return;
+  }
   const isLanding = route.kind === "landing";
   main.classList.toggle("lite-landing-page", isLanding);
   landing.hidden = !isLanding;
   view.hidden = isLanding;
-  if (isLanding) {
+  if (route.kind === "landing") {
     document.title = "ebbinghaus lite";
     back.hidden = breadcrumbs.hidden = true;
     breadcrumbs.replaceChildren();
@@ -211,9 +268,11 @@ async function openRoute(focus = false): Promise<void> {
     return;
   }
   const current = route.crumbs.at(-1)!;
-  document.title = current.title + " · ebbinghaus lite";
+  document.title = (route.kind === "archive" ? "Accéder à l’archive" : current.title) + " · ebbinghaus lite";
   navigationControls(route);
-  if (route.kind === "list") {
+  if (route.kind === "archive") {
+    showArchive(route.archive, signal, focus);
+  } else if (route.kind === "list") {
     const page = screen(current.title, true);
     const list = el("ul", "portal-list");
     const prefix = current.href === home.href ? current.href : current.href + "/";

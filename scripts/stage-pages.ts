@@ -1,13 +1,22 @@
 import { copyFile, lstat, mkdir, readFile, realpath, rename, rmdir } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
-import { parseDeck } from "../src/import.ts";
+import { join, resolve } from "node:path";
+import { parseEncryptedArchive } from "../src/archive.ts";
 import { catalog } from "../src/lite-catalog.ts";
 
 const output = resolve("dist-pages");
 const publication = await realpath("publication");
 const paths = new Set<string>();
+const archives = new Set<string>();
 for (const institution of catalog) {
   for (const department of institution.departments) {
+    const archivePath = "archives/" + department.archive + ".enc.json";
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(department.archive) || archives.has(archivePath)) {
+      throw new Error("Invalid or duplicate archive");
+    }
+    const source = join(publication, archivePath);
+    if (!(await lstat(source)).isFile() || await realpath(source) !== source) throw new Error("Invalid archive file");
+    parseEncryptedArchive(JSON.parse(await readFile(source, "utf8")), department.archive);
+    archives.add(archivePath);
     for (const course of department.courses) {
       const updated = new Date(course.updatedOn);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(course.updatedOn) ||
@@ -22,14 +31,6 @@ for (const institution of catalog) {
               !path.endsWith("." + kind) || paths.has(path)) {
             throw new Error("Invalid or duplicate public resource: " + path);
           }
-          const source = join(publication, path);
-          if (!(await lstat(source)).isFile() || await realpath(source) !== source) {
-            throw new Error("Public resource must be a regular file: " + path);
-          }
-          if (kind === "json") {
-            const result = parseDeck(await readFile(source, "utf8"));
-            if (!result.ok || result.ignored) throw new Error("Invalid public deck: " + path);
-          }
           paths.add(path);
         }
       }
@@ -43,9 +44,10 @@ await rename(join(output, "index.html"), join(output, "importer", "index.html"))
 await rename(join(output, "lite", "index.html"), join(output, "index.html"));
 await rmdir(join(output, "lite"));
 await copyFile("public/LUCIDE-LICENSE.txt", join(output, "LUCIDE-LICENSE.txt"));
-for (const path of paths) {
+await copyFile("node_modules/staticrypt/LICENSE", join(output, "STATICRYPT-LICENSE.txt"));
+await mkdir(join(output, "archives"));
+for (const path of archives) {
   const target = join(output, path);
-  await mkdir(dirname(target), { recursive: true });
   await copyFile(join(publication, path), target);
 }
-console.log("Pages artifact: " + paths.size + " reviewed resources in dist-pages/");
+console.log("Pages artifact: " + archives.size + " encrypted archives; no plaintext course files");

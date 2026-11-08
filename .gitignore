@@ -3,6 +3,7 @@ dist/
 dist-portal/
 dist-pages/
 .portal-data.local/
+.archive-materials.local/
 .DS_Store
 .omx/
 .env

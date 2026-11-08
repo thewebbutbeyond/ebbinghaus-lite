@@ -1,54 +1,48 @@
-# Bibliothèque publique et GitHub Pages
+# Bibliothèque et GitHub Pages
 
 La bibliothèque et l’importateur sont deux entrées HTML du même artefact.
-Ils partagent le moteur de révision TypeScript. La bibliothèque charge un
-paquet publié à la demande ; l’importateur lit un fichier local dans le
-navigateur. Le prototype avec connexion a son propre build.
+Ils partagent le moteur de révision TypeScript. L’importateur lit un
+fichier local sans mot de passe. Le prototype avec comptes conserve son
+build séparé et ne fait pas partie de Pages.
 
-Le [catalogue](../src/lite-catalog.ts) fixe les noms, l’ordre et les chemins
-publics. Sans fragment, l’accueil présente la bibliothèque ; **Voir les cours**
-ouvre le catalogue sous `#/`. Un lien direct vers un cours demande le même
-fichier HTML à Pages, puis le navigateur ouvre le cours indiqué après le `#`.
-Les ancres et l’événement `hashchange` laissent le navigateur gérer son
-historique. L’accueil demande aux moteurs de ne pas l’indexer ; les liens
-restent publics et partageables.
+Le [catalogue](../src/lite-catalog.ts) fixe les noms, l’ordre, les chemins
+logiques et l’archive de chaque département. Sans fragment, l’accueil
+présente la bibliothèque ; **Voir les cours** ouvre les institutions sous
+`#/`. Le choix d’un département mène à **Accéder à l’archive**. Le mot de
+passe déverrouille les cours, les cartes et les PDF.
 
-`npm run build:pages` compile les deux entrées et copie les ressources
-listées vers `dist-pages/`. Le build ne copie pas tout le dossier de
-publication : une ressource doit être explicitement référencée, au bon
-format et sous un chemin public autorisé. Les fichiers déjà publiés
-gardent leur chemin sous `cours/`. Les originaux de l’école et les données
-privées restent hors du catalogue et de l’artefact.
+Les ancres et `hashchange` conservent les liens directs et l’historique.
+Un lien profond passe par le même déverrouillage avant de rendre sa page.
+Le logo revient à l’accueil. Une clé dérivée dans `sessionStorage` permet
+les rechargements dans le même onglet.
 
-Le catalogue peut aussi référencer une simulation calculée dans le navigateur.
-Le cours de cybersécurité propose le [DDoS du chapitre 1](simulation-ddos.md),
-compilé avec le site. Cette entrée ne copie aucun support supplémentaire et
-ne nécessite ni compte ni serveur.
+`npm run build:pages` compile les deux entrées et copie uniquement les
+archives chiffrées référencées dans `dist-pages/archives/`. Il ne copie ni
+PDF, ni paquet en clair, ni secret, ni original de l’école, ni prototype
+privé. Les chemins logiques sous `cours/` ne sont plus des fichiers publics.
+Voir [Accès aux archives](acces-archives.md) pour la préparation du contenu,
+les garanties du chiffrement et ses limites.
 
-Quand tu modifies un cours ou l’un de ses PDF ou paquets, mets aussi à jour
-son champ \`updatedOn\` dans le catalogue avec la date du changement
-(\`AAAA-MM-JJ\`). Le site affiche cette date sur la page du cours. Un
-redéploiement seul ne la change pas.
+Le cours de cybersécurité référence la simulation calculée du
+[DDoS du chapitre 1](simulation-ddos.md). Sa page passe par le même accès
+à l’archive. Son code reste du code applicatif public.
 
-`npm run test:pages` sert cet artefact sous `/ebbinghaus-lite/` et lance
-les tests sur deux tailles d’écran. Sans secours de routage, une URL de
-fichier inexistante répond 404. Le contrôle d’inventaire vérifie les PDF et
-JSON servis par rapport aux fichiers publics d’origine.
+Quand un cours change, mettre à jour son champ `updatedOn`
+(`AAAA-MM-JJ`). Après modification d’un document, régénérer l’archive
+avant le build. Un redéploiement seul ne change pas cette date.
 
-## Lors de la mise en ligne
+`npm run test:pages` sert le véritable artefact sous `/ebbinghaus-lite/`
+sur deux tailles d’écran. Les tests d’accès utilisent le secret local,
+transmis séparément. Les anciennes URL de fichiers sous `cours/`
+répondent 404. Les contrôles couvrent l’inventaire, les mots de passe, les
+liens directs, les cartes, les PDF, les simulations et l’importateur.
 
-1. Renommer le dépôt distant en `ebbinghaus-lite`, puis mettre à jour
-   `origin` vers `git@github.com:thewebbutbeyond/ebbinghaus-lite.git`.
-2. Une fois les changements intégrés à `main`, vérifier que Pages utilise
-   **GitHub Actions** comme source et lancer **Publier ebbinghaus lite**.
-   Le workflow manuel n’accepte que `main` dans le dépôt renommé.
-3. Vérifier [la bibliothèque cible](https://thewebbutbeyond.github.io/ebbinghaus-lite/),
-   un lien direct vers un cours et
-   [l’importateur cible](https://thewebbutbeyond.github.io/ebbinghaus-lite/importer/)
-   avant de remplacer les liens partagés. L’ancienne racine de l’importateur
-   devient le chemin `/ebbinghaus-lite/importer/` ; pour les PDF et JSON
-   sous `cours/`, remplacer seulement le préfixe du dépôt. Pour l’ancienne
-   liste plate, partager le lien vers ESI :
-   `/ebbinghaus-lite/#/he2b/esi`.
+Le workflow manuel **Publier ebbinghaus lite** n’accepte que `main`.
+Il publie une archive préparée sans recevoir le mot de passe. Les liens
+vers un cours après `#` restent valables ; les anciens liens directs de
+documents doivent être remplacés par le lien vers leur cours.
 
-GitHub [ne redirige pas les anciennes URL Pages lors d’un renommage](https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository).
+La modification locale ne supprime pas le contenu du site actuellement
+en ligne ni les fichiers des anciens commits publics. La publication du
+nouvel artefact et la gestion des anciennes copies sont deux opérations
+distinctes. Aucune réécriture d’historique n’est automatisée ici.
