@@ -17,14 +17,18 @@ export function createPlayback(signal: AbortSignal, actions: PlaybackActions) {
   const group = el("div", "example-playback " + prefix + "-playback");
   group.setAttribute("role", "group");
   group.setAttribute("aria-label", "Lecture de l'exemple");
-  const previous = action("Précédent", prefix + "-previous", "button-outline", "arrowLeft");
+  const previous = action("Précédent", prefix + "-previous", "button-outline", "stepBack");
   const play = action("Lire", prefix + "-play", "button-primary", "play");
-  const next = action("Suivant", prefix + "-next");
-  next.append(icon("arrowRight"));
+  const next = action("Suivant", prefix + "-next", "button-outline", "stepForward");
   const reset = action("Recommencer", prefix + "-reset", "button-outline", "stop");
+  for (const button of [previous, play, reset, next]) {
+    const label = button.querySelector(".action-label")!.textContent!;
+    button.setAttribute("aria-label", label);
+    button.title = label;
+  }
   const status = el("span", "example-status " + prefix + "-status");
   status.setAttribute("role", "status");
-  group.append(previous, play, next, reset);
+  group.append(previous, play, reset, next);
   element.append(group);
 
   function update(): void {
@@ -37,6 +41,8 @@ export function createPlayback(signal: AbortSignal, actions: PlaybackActions) {
     if (play.querySelector(".action-label")!.textContent !== label) {
       play.querySelector(".action-label")!.textContent = label;
       play.querySelector("svg")!.replaceWith(icon(timer === undefined ? "play" : "pause"));
+      play.setAttribute("aria-label", label);
+      play.title = label;
     }
     previous.disabled = position.first || !!position.disabled || signal.aborted;
     play.disabled = next.disabled = position.last || !!position.disabled || signal.aborted;

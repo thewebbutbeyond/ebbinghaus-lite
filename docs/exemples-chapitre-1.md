@@ -31,8 +31,10 @@ passe affichés dans les exemples sont exclusivement fictifs.
 
 ## Commandes et cycle de vie
 
-Précédent, Lire/Pause, Suivant et Recommencer utilisent le même composant que
-DDoS. Pour les trois nouveaux exemples, un pas est un événement pédagogique,
+Les boutons à icônes suivent l’ordre Précédent, Lire/Pause, Recommencer,
+Suivant et utilisent le même composant que DDoS. Leurs noms restent accessibles
+au clavier et aux lecteurs d’écran, avec une infobulle au survol. Pour les trois
+nouveaux exemples, un pas est un événement pédagogique,
 pas une seconde de réseau ou de travail humain. L’affichage Étape n/N indique
 les transitions parcourues depuis l’état initial 0. La lecture automatique
 avance d’un événement par seconde.
