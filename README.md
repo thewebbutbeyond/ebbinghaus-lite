@@ -40,6 +40,7 @@ reste accessible sans compte.
 ## Documentation
 
 - [Bibliothèque publique : architecture et passage à Pages](docs/bibliotheque-pages.md)
+- [Exemple interactif DDoS : utilisation et modèle](docs/simulation-ddos.md)
 - [Guide technique de l’importateur](docs/guide-technique.md)
 - [Expertise et décisions d’ingénierie](docs/jugement-technique.md)
 - [Guide du prototype privé](docs/portail-local.md)

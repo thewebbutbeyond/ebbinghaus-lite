@@ -1,7 +1,8 @@
 /// <reference types="vite/client" />
 import { icon } from "./icons.ts";
+import { createDdosView } from "./ddos-view.ts";
 import { parseDeck } from "./import.ts";
-import { catalog, methodSheetTitle, type Course, type Resource } from "./lite-catalog.ts";
+import { catalog, methodSheetTitle, type Course, type Resource, type Simulation } from "./lite-catalog.ts";
 import { action, el, renderReview, reviewAction } from "./review-view.ts";
 import { restart, type Session } from "./session.ts";
 
@@ -10,6 +11,7 @@ type Crumb = Readonly<{ title: string; href: string }>;
 type Route = { kind: "landing" } | { kind: "list"; crumbs: Crumb[]; entries: readonly Named[] } |
   { kind: "course"; crumbs: Crumb[]; course: Course } |
   { kind: "deck"; crumbs: Crumb[]; resource: Resource } |
+  { kind: "simulation"; crumbs: Crumb[]; simulation: Simulation } |
   { kind: "missing"; crumbs: Crumb[] };
 
 const main = document.querySelector<HTMLElement>("#portal-main")!;
@@ -23,7 +25,7 @@ const courseDate = new Intl.DateTimeFormat("fr-BE", { dateStyle: "long", timeZon
 const institutions = catalog.flatMap((institution) => {
   const departments = institution.departments.flatMap((department) => {
     const courses = department.courses.filter((course) =>
-      course.decks.length || course.sheets.length || course.corrections.length);
+      course.decks.length || course.sheets.length || course.corrections.length || course.simulations?.length);
     return courses.length ? [{ ...department, courses }] : [];
   });
   return departments.length ? [{ ...institution, departments }] : [];
@@ -55,7 +57,14 @@ function readRoute(): Route {
   if (!course) return missing();
   add(course, 3);
   if (parts.length === 3) return { kind: "course", crumbs, course };
-  if (parts.length !== 5 || parts[3] !== "paquets") return missing();
+  if (parts.length !== 5) return missing();
+  if (parts[3] === "simulations") {
+    const simulation = course.simulations?.find(({ id }) => id === parts[4]);
+    if (!simulation) return missing();
+    add(simulation, 5);
+    return { kind: "simulation", crumbs, simulation };
+  }
+  if (parts[3] !== "paquets") return missing();
   const resource = course.decks.find(({ id }) => id === parts[4]);
   if (!resource) return missing();
   add(resource, 5);
@@ -77,7 +86,8 @@ function navigationControls(route: Exclude<Route, { kind: "landing" }>): void {
     return;
   }
   back.href = parent.href;
-  back.querySelector("span")!.textContent = route.kind === "deck" ? "Retour au cours" : parent.title;
+  back.querySelector("span")!.textContent = route.kind === "deck" || route.kind === "simulation"
+    ? "Retour au cours" : parent.title;
   const list = el("ol");
   for (const [index, crumb] of route.crumbs.entries()) {
     const item = el("li");
@@ -146,6 +156,15 @@ function showCourse(course: Course, href: string, focus: boolean): void {
   date.dateTime = course.updatedOn;
   updated.append(date);
   page.append(updated);
+  if (course.simulations?.length) {
+    const section = el("section", "portal-section");
+    const list = el("ul", "portal-list");
+    for (const simulation of course.simulations) {
+      list.append(row(simulation.title, href + "/simulations/" + simulation.id));
+    }
+    section.append(el("h2", "", "Exemples interactifs"), list);
+    page.append(section);
+  }
   for (const [label, resources, isDeck] of [
     ["Flashcards", course.decks, true],
     [methodSheetTitle, course.sheets, false],
@@ -208,6 +227,8 @@ async function openRoute(focus = false): Promise<void> {
     showCourse(route.course, current.href, focus);
   } else if (route.kind === "missing") {
     show(screen(current.title), focus);
+  } else if (route.kind === "simulation") {
+    show(createDdosView(signal), focus);
   } else {
     const loading = el("p", "portal-page", "Chargement du paquet…");
     loading.setAttribute("role", "status");
