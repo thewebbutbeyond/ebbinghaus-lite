@@ -3,12 +3,21 @@ import { icon } from "./icons.ts";
 import { ArchiveAccess } from "./archive-access.ts";
 import { ArchivePasswordError } from "./archive.ts";
 import { createDdosView } from "./ddos-view.ts";
+import { createSessionView } from "./session-example-view.ts";
+import { createScytaleView } from "./scytale-view.ts";
+import { createPhishingView } from "./phishing-example-view.ts";
 import { parseDeck } from "./import.ts";
 import { catalog, methodSheetTitle, type Course, type Resource, type Simulation } from "./lite-catalog.ts";
 import { action, el, renderReview, reviewAction } from "./review-view.ts";
 import { restart, type Session } from "./session.ts";
 
 type Named = Readonly<{ id: string; title: string }>;
+const simulationViews: Record<Simulation["id"], (signal: AbortSignal, title: string) => HTMLElement> = {
+  ddos: createDdosView,
+  "session-volee": createSessionView,
+  scytale: createScytaleView,
+  phishing: createPhishingView,
+};
 type Crumb = Readonly<{ title: string; href: string }>;
 type Route = { kind: "landing" } | { kind: "list"; crumbs: Crumb[]; entries: readonly Named[] } |
   { kind: "archive"; crumbs: Crumb[]; archive: string } |
@@ -221,17 +230,50 @@ function showCourse(course: Course, href: string, focus: boolean): void {
   for (const [label, resources, isDeck] of [
     ["Flashcards", course.decks, true],
     [methodSheetTitle, course.sheets, false],
-    ["Corrigés", course.corrections, false],
   ] as const) {
     if (!resources.length) continue;
     const section = el("section", "portal-section");
-    const list = el("ul", "portal-list");
-    for (const entry of resources) {
-      const item = isDeck ? row(entry.title, href + "/paquets/" + entry.id)
-        : row(entry.title, resourceUrl(entry), entry);
-      list.append(item);
+    section.append(el("h2", "", label));
+    const groups = isDeck ? [course.decks.filter(deck => deck.scope === "course"), course.decks.filter(deck => deck.scope === "chapter")] : [resources];
+    for (const [index, group] of groups.filter(group => group.length).entries()) {
+      if (index) section.append(el("hr", "lite-deck-divider"));
+      const list = el("ul", "portal-list");
+      for (const entry of group) {
+        list.append(isDeck ? row(entry.title, href + "/paquets/" + entry.id)
+          : row(entry.title, resourceUrl(entry), entry));
+      }
+      section.append(list);
     }
-    section.append(el("h2", "", label), list);
+    page.append(section);
+  }
+  if (course.corrections.length) {
+    const section = el("section", "portal-section");
+    section.append(el("h2", "", "Corrigés"));
+    const monthName = new Intl.DateTimeFormat("fr-BE", { month: "long", timeZone: "UTC" });
+    for (const [kind, label] of [["chapter", "Chapitres"], ["bilan", "Bilans"], ["examen", "Examens"]] as const) {
+      const entries = course.corrections.filter(entry => entry.kind === kind);
+      if (!entries.length) continue;
+      const group = el("section", "lite-correction-group");
+      group.dataset.correctionKind = kind;
+      group.append(el("h3", "", label));
+      const months = kind === "chapter" ? [null] : [...new Set(entries.flatMap(entry => entry.kind === "chapter" ? [] : [entry.month]))].sort((a, b) => a - b);
+      for (const month of months) {
+        const subgroup = el("div", "lite-correction-month");
+        if (month !== null) {
+          subgroup.dataset.month = String(month);
+          const name = monthName.format(new Date(Date.UTC(2000, month - 1, 1)));
+          subgroup.append(el("h4", "", name.charAt(0).toUpperCase() + name.slice(1)));
+        }
+        const list = el("ul", "portal-list");
+        for (const entry of entries) {
+          if (month !== null && (entry.kind === "chapter" || entry.month !== month)) continue;
+          list.append(row(entry.title, resourceUrl(entry), entry));
+        }
+        subgroup.append(list);
+        group.append(subgroup);
+      }
+      section.append(group);
+    }
     page.append(section);
   }
   show(page, focus);
@@ -287,7 +329,7 @@ async function openRoute(focus = false): Promise<void> {
   } else if (route.kind === "missing") {
     show(screen(current.title), focus);
   } else if (route.kind === "simulation") {
-    show(createDdosView(signal), focus);
+    show(simulationViews[route.simulation.id](signal, route.simulation.title), focus);
   } else {
     const loading = el("p", "portal-page", "Chargement du paquet…");
     loading.setAttribute("role", "status");
