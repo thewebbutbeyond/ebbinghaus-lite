@@ -1,10 +1,12 @@
 type Named = Readonly<{ id: string; title: string }>;
 export type Resource = Named & Readonly<{ path: string }>;
+export type Simulation = Readonly<{ id: "ddos"; title: string }>;
 export type Course = Named & Readonly<{
   updatedOn: string;
   decks: readonly Resource[];
   sheets: readonly Resource[];
   corrections: readonly Resource[];
+  simulations?: readonly Simulation[];
 }>;
 export type Department = Named & Readonly<{ courses: readonly Course[] }>;
 export type Institution = Named & Readonly<{ departments: readonly Department[] }>;
@@ -40,7 +42,8 @@ const algorithmique: Course = {
 const cybersecurite: Course = {
   id: "introduction-a-la-cybersecurite",
   title: cybersecurityTitle,
-  updatedOn: "2026-11-06",
+  updatedOn: "2026-11-08",
+  simulations: [{ id: "ddos", title: "DDoS" }],
   decks: [
     resource("secu", "revision-complete", cybersecurityTitle + " · Flashcards", "05-revision-complete.json"),
     resource("secu", "introduction", "Chapitre 0 · Introduction", "00-introduction.json"),

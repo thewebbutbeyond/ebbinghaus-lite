@@ -20,6 +20,11 @@ format et sous un chemin public autorisé. Les fichiers déjà publiés
 gardent leur chemin sous `cours/`. Les originaux de l’école et les données
 privées restent hors du catalogue et de l’artefact.
 
+Le catalogue peut aussi référencer une simulation calculée dans le navigateur.
+Le cours de cybersécurité propose le [DDoS du chapitre 1](simulation-ddos.md),
+compilé avec le site. Cette entrée ne copie aucun support supplémentaire et
+ne nécessite ni compte ni serveur.
+
 Quand tu modifies un cours ou l’un de ses PDF ou paquets, mets aussi à jour
 son champ \`updatedOn\` dans le catalogue avec la date du changement
 (\`AAAA-MM-JJ\`). Le site affiche cette date sur la page du cours. Un

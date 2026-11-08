@@ -11,6 +11,13 @@ const paths = {
     "M6.003 5.125a4 4 0 0 0-2.526 5.77",
   ],
   arrowLeft: ["m12 19-7-7 7-7", "M19 12H5"],
+  arrowRight: ["m12 5 7 7-7 7", "M5 12h14"],
+  // Simple playback and attack symbols drawn for Lite, using the shared SVG style.
+  play: ["m8 5 11 7-11 7Z"],
+  pause: ["M9 5v14", "M15 5v14"],
+  stop: ["M6 6h12v12H6Z"],
+  swords: ["m4 3 3 1 12 12-3 3L4 7Z", "m3 21 5-5", "m3 14 7 7",
+    "m14 8 6-5 1 4-5 6", "m16 16 5 5", "m14 21 7-7"],
   arrowUpRight: ["M7 7h10v10", "M7 17 17 7"],
   chevronRight: ["m9 18 6-6-6-6"],
   logout: ["M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", "m16 17 5-5-5-5", "M21 12H9"],
