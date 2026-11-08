@@ -182,15 +182,24 @@ for (const example of examples) {
     const url = course + "/simulations/" + example.id;
     await page.goto(url);
     await page.clock.pauseAt(new Date("2026-11-08T12:01:00Z"));
-    await expect(page.getByRole("group", { name: "Lecture de l'exemple" }).getByRole("button"))
-      .toHaveText(["Précédent", "Lire", "Suivant", "Recommencer"]);
+    const buttons = page.getByRole("group", { name: "Lecture de l'exemple" }).getByRole("button");
+    const labels = ["Précédent", "Lire", "Recommencer", "Suivant"];
+    await expect(buttons).toHaveCount(labels.length);
+    for (const [index, label] of labels.entries()) {
+      await expect(buttons.nth(index)).toHaveAccessibleName(label);
+      await expect(buttons.nth(index)).toHaveAttribute("title", label);
+      await expect(buttons.nth(index).locator(".action-label")).toBeHidden();
+      await expect(buttons.nth(index).locator("svg[aria-hidden=true]")).toBeVisible();
+    }
     await control(page, "Suivant").focus();
     await page.keyboard.press("Enter");
     await expect(counter(page)).toHaveText("Étape 1/" + example.last);
     await control(page, "Lire").click();
+    await expect(control(page, "Pause")).toHaveAttribute("title", "Pause");
     await page.clock.runFor(1000);
     await expect(counter(page)).toHaveText("Étape 2/" + example.last);
     await control(page, "Pause").click();
+    await expect(control(page, "Lire")).toHaveAttribute("title", "Lire");
     await page.clock.runFor(2000);
     await expect(counter(page)).toHaveText("Étape 2/" + example.last);
     await control(page, "Lire").click();

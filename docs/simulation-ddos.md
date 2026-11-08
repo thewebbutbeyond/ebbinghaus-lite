@@ -29,9 +29,11 @@ Pour une démonstration :
    réglage après un retour arrière crée un nouveau futur, sans vider la file.
 5. **Recommencer** restaure le temps, l'historique et les réglages initiaux.
 
-Les commandes suivent l'ordre Précédent, Lire/Pause, Suivant, Recommencer.
+Les boutons à icônes suivent l'ordre Précédent, Lire/Pause, Recommencer, Suivant.
+Un triangle contre une barre verticale recule ou avance d'une étape.
 Le triangle lance la lecture ; les deux barres la suspendent ; le carré
-ramène au début et laisse l'exemple en pause. Le bouton d'attaque, à droite,
+ramène au début et laisse l'exemple en pause. Les noms accessibles et les
+infobulles identifient chaque commande. Le bouton d'attaque, à droite,
 est distinct des commandes de lecture. Sous l'exemple, l'article toujours
 visible explique la disponibilité, les machines compromises et la surcharge
 à partir du chapitre1 et du cas numérique initial. Les références à ce cas
