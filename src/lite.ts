@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import { createSignatureView } from "./signature-example-view.ts";
 import { createSharedKeyView } from "./shared-key-example-view.ts";
 import { icon } from "./icons.ts";
 import { ArchiveAccess } from "./archive-access.ts";
@@ -23,6 +24,7 @@ const simulationViews: Record<Simulation["id"], (signal: AbortSignal, title: str
   testament: createWillView,
   "blocs-bourrage": createPaddingView,
   "cle-partagee": createSharedKeyView,
+  signature: createSignatureView,
 };
 type Crumb = Readonly<{ title: string; href: string }>;
 type Route = { kind: "landing" } | { kind: "list"; crumbs: Crumb[]; entries: readonly Named[] } |
