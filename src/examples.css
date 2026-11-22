@@ -62,7 +62,18 @@
 button.scytale-cell { cursor: pointer; }
 .scytale-cell[aria-pressed="true"] { border: 2px solid #075a70; background: #e6f2f4; color: #075a70; font-weight: 600; }
 .scytale-padding { background: repeating-linear-gradient(135deg, transparent, transparent 4px, var(--border) 4px, var(--border) 5px); }
-.scytale-rod { border-radius: 1.5rem; border: 1px solid var(--border); padding: 1rem; background: var(--secondary); }
+.scytale-slider { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; min-height: 44px; }
+.scytale-view .example-stage > * { min-width: 0; }
+.scytale-slider input { flex: 1 1 8rem; min-width: 0; accent-color: var(--foreground); }
+.scytale-setting-value { font-size: 0.875rem; color: var(--muted-foreground); }
+.scytale-section { flex: 0 0 auto; }
+.scytale-tape { display: flex; flex-wrap: wrap; gap: 0.2rem; }
+.scytale-tape .scytale-cell { width: 32px; height: 36px; flex-basis: 32px; font-size: 0.9rem; }
+.scytale-cell[data-front="true"] { border: 2px solid #075a70; background: #e6f2f4; color: #075a70; font-weight: 600; }
+.scytale-stick { display: block; }
+.scytale-wood { fill: #6b4a2b; }
+.scytale-band { fill: #b98a5e; stroke: #6b4a2b; stroke-width: 1.5; }
+.scytale-letter { font: 600 18px system-ui, sans-serif; fill: #2a1a0c; }
 .scytale-result { display: block; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-family: ui-monospace, monospace; font-size: 1.125rem; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 3rem; }
 .scytale-settings :focus-visible, .scytale-scroll:focus-visible, .scytale-cell:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
 .will-text { margin: 0; padding: 1rem; border-left: 3px solid var(--border); background: var(--secondary); border-radius: var(--radius); line-height: 1.6; }
