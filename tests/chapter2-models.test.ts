@@ -71,3 +71,18 @@ test("shared key: Bob decrypts with the shared key, Eve's guess fails, the ciphe
   altered[0] = altered[0]! ^ 1;
   assert.equal(await decrypt(SHARED_SECRET, altered), null);
 });
+
+test("signature: unciphering with the public key gives back the digest, any change to the message breaks it", async () => {
+  const { cipherDigest, digest, FORGED_MESSAGE, sign, SIGNED_MESSAGE, uncipherSignature, verify } = await import("../src/signature-example.ts");
+  const hash = await digest(SIGNED_MESSAGE);
+  const signature = await sign(SIGNED_MESSAGE);
+  assert.equal(signature, cipherDigest(hash));
+  assert.equal(signature.length, 256);
+  assert.equal(signature, await sign(SIGNED_MESSAGE));
+  assert.equal(uncipherSignature(signature), hash);
+  assert.equal(await verify(SIGNED_MESSAGE, signature), true);
+  assert.equal(await verify(FORGED_MESSAGE, signature), false);
+  assert.equal(await verify("Hello Bob!", signature), false);
+  const tampered = (signature.startsWith("0") ? "1" : "0") + signature.slice(1);
+  assert.equal(await verify(SIGNED_MESSAGE, tampered), false);
+});

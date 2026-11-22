@@ -19,6 +19,7 @@ déverrouillage de l’archive :
 * [Testament du milliardaire](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/testament)
 * [Blocs et bourrage](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/blocs-bourrage)
 * [Clé symétrique partagée](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/cle-partagee)
+* [Signature numérique](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/signature)
 
 ## Testament du milliardaire
 
@@ -86,11 +87,37 @@ fixe pour la reproductibilité). Données fictives.
 
 Référence : Chapitre 2, clé symétrique partagée, p. 6 et 48 à 49 du PDF.
 
+## Signature numérique
+
+Alice signe « Hello Bob ! » avec sa clé privée ; Bob, comme tout le monde,
+vérifie avec sa clé publique. Le schéma simple montre « Signer » comme une
+boîte noire, puis le schéma détaillé l’ouvre : hacher, chiffrer l’empreinte.
+
+Les six étapes :
+
+1. Schéma simple : message + clé privée → signature.
+2. Alice calcule l’empreinte SHA-256 du message.
+3. Elle chiffre l’empreinte avec sa clé privée : c’est la signature.
+4. Le message (en clair) et la signature partent vers Bob.
+5. Bob déchiffre la signature avec la clé publique et hache le message reçu :
+   empreintes identiques, signature valide.
+6. L’intercepteur modifie le message et garde la signature : refusée.
+
+Sous la scène, l’étudiant modifie le message reçu par Bob : un caractère
+suffit à faire échouer la vérification, revenir au texte la rétablit. Les
+commandes OpenSSL de la p. 80 sont reprises dans l’explication.
+
+RSA réel dans le navigateur, avec une clé de démonstration fixe de 1024 bits
+et sans remplissage PKCS#1, pour la reproductibilité. Données fictives.
+
+Référence : Chapitre 2, signature, p. 7 et 74 à 80 du PDF.
+
 ## Tests
 
 * `node --test tests/chapter2-models.test.ts` : SHA-256 réel, verdict
   seulement à l’étape 6, le notaire B ne détient jamais le texte ; 11 blocs
   et bourrage sur le seul dernier bloc, aller-retour PKCS#7 pour toutes les
   longueurs ; seule la clé partagée déchiffre, une modification du texte
-  chiffré est rejetée.
+  chiffré est rejetée ; la clé publique redonne l’empreinte signée, et toute
+  modification du message ou de la signature fait échouer la vérification.
 * `npm run test:pages` : parcours pas à pas et édition libre, bureau et mobile.
