@@ -34,3 +34,27 @@ test("comparison restores a match when the original text is presented", async ()
   await nextWill(frozen);
   assert.equal(JSON.stringify(frozen), before);
 });
+
+test("padding: the course message gives 11 blocks, padding only on the last", async () => {
+  const { BLOCK_SIZE, encode, PADDING_MESSAGE, toBlocks } = await import("../src/padding-example.ts");
+  const blocks = toBlocks(encode(PADDING_MESSAGE));
+  assert.equal(blocks.length, 11);
+  assert.ok(blocks.every(block => block.bytes.length === BLOCK_SIZE));
+  assert.deepEqual(blocks.map(block => block.padding), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11]);
+  assert.deepEqual(blocks.at(-1)!.bytes.slice(-11), Array(11).fill(11));
+  assert.equal(toBlocks(encode(PADDING_MESSAGE), BLOCK_SIZE, false).at(-1)!.bytes.length, 5);
+});
+
+test("padding: PKCS#7 round-trips every length and adds a full block when the message fits exactly", async () => {
+  const { pad, unpad } = await import("../src/padding-example.ts");
+  for (const size of [8, 16, 32]) for (let length = 0; length <= 3 * size; length++) {
+    const bytes = Uint8Array.from({ length }, (_, n) => n % 256);
+    const padded = pad(bytes, size);
+    assert.equal(padded.length % size, 0);
+    assert.equal(padded.length - length, size - (length % size));
+    assert.deepEqual(unpad(padded, size), bytes);
+  }
+  assert.equal(unpad(Uint8Array.from([1, 2, 3, 0]), 4), null);
+  assert.equal(unpad(Uint8Array.from([1, 2, 3, 3]), 4), null);
+  assert.equal(unpad(Uint8Array.from([1, 2, 3]), 4), null);
+});
