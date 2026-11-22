@@ -58,3 +58,16 @@ test("padding: PKCS#7 round-trips every length and adds a full block when the me
   assert.equal(unpad(Uint8Array.from([1, 2, 3, 3]), 4), null);
   assert.equal(unpad(Uint8Array.from([1, 2, 3]), 4), null);
 });
+
+test("shared key: Bob decrypts with the shared key, Eve's guess fails, the ciphertext hides the text", async () => {
+  const { decrypt, encrypt, EVE_GUESS, SHARED_KEY_MESSAGE, SHARED_SECRET, toHex } = await import("../src/shared-key-example.ts");
+  const cipher = await encrypt(SHARED_SECRET, SHARED_KEY_MESSAGE);
+  assert.equal(cipher.length, new TextEncoder().encode(SHARED_KEY_MESSAGE).length + 16);
+  assert.equal(await decrypt(SHARED_SECRET, cipher), SHARED_KEY_MESSAGE);
+  assert.equal(await decrypt(EVE_GUESS, cipher), null);
+  assert.ok(!new TextDecoder("utf-8", { fatal: false }).decode(cipher).includes("Bob"));
+  assert.ok(!toHex(cipher).includes(toHex(new TextEncoder().encode("Bob"))));
+  const altered = cipher.slice();
+  altered[0] = altered[0]! ^ 1;
+  assert.equal(await decrypt(SHARED_SECRET, altered), null);
+});

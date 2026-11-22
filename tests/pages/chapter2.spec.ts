@@ -95,3 +95,39 @@ test("padding lab: a message that fits exactly gets a full block of padding", as
   await input.fill("é");
   await expect(summary).toHaveAttribute("data-padding-bytes", "6");
 });
+
+const sharedKey = root + "#/he2b/esi/introduction-a-la-cybersecurite/simulations/cle-partagee";
+
+test("the shared key example: the interceptor sees only ciphertext, Bob reads the message", async ({ page }, info) => {
+  await authorizeTab(page);
+  await page.goto(sharedKey);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Chapitre 2 • Clé symétrique partagée");
+  await expect(counter(page)).toHaveText("Étape 0/4");
+  await expect(page.locator('.example-stage [data-actor="eve"]')).toContainText("aucune clé");
+  await next(page, 2);
+  await expect(page.locator(".example-stage [data-eve-sees]")).toHaveAttribute("data-eve-sees", "cipher");
+  await expect(page.locator(".example-stage [data-cipher]")).toHaveText(/^[0-9a-f]{100,}$/);
+  await next(page);
+  await expect(page.locator("[data-eve-result]")).toHaveAttribute("data-eve-result", "failed");
+  if (info.project.name === "desktop") {
+    await mkdir(".omx/chapter2-examples/screenshots", { recursive: true });
+    await page.screenshot({ path: ".omx/chapter2-examples/screenshots/cle-partagee.png", fullPage: true });
+  }
+  await next(page);
+  await expect(page.locator("[data-bob-recovered]")).toHaveAttribute("data-bob-recovered", "true");
+  await expect(control(page, "Suivant")).toBeDisabled();
+});
+
+test("shared key lab: only the shared key decrypts the student's message", async ({ page }) => {
+  await authorizeTab(page);
+  await page.goto(sharedKey);
+  const result = page.locator("[data-lab-decrypted]");
+  await page.getByLabel("Message d’Alice").fill("abc");
+  await expect(page.locator("[data-cipher-length]")).toHaveAttribute("data-cipher-length", "19");
+  await expect(result).toHaveAttribute("data-lab-decrypted", "false");
+  await page.getByLabel("Clé essayée pour déchiffrer").fill("tournesol-bleu-42");
+  await expect(result).toHaveAttribute("data-lab-decrypted", "true");
+  await expect(result).toContainText("abc");
+  await page.getByLabel("Clé essayée pour déchiffrer").fill("tournesol-bleu-43");
+  await expect(result).toHaveAttribute("data-lab-decrypted", "false");
+});

@@ -90,3 +90,9 @@ button.scytale-cell { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .example-view *, .example-view *::before, .example-view *::after { animation: none; transition: none; }
 }
+.key-parties { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
+.key-party { border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem 0.75rem; display: grid; gap: 0.35rem; }
+.key-party h3 { margin: 0; font-size: 0.95rem; }
+.key-chip { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; background: #dcfae6; color: #085d3a; font-family: ui-monospace, monospace; font-size: 0.8rem; }
+.key-chip-none { background: #fee4e2; color: #912018; }
+.cipher-text { font-family: ui-monospace, monospace; font-size: 0.75rem; word-break: break-all; padding: 0.6rem; border: 1px dashed var(--border); border-radius: 6px; background: var(--background); }

@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import { createSharedKeyView } from "./shared-key-example-view.ts";
 import { icon } from "./icons.ts";
 import { ArchiveAccess } from "./archive-access.ts";
 import { ArchivePasswordError } from "./archive.ts";
@@ -21,6 +22,7 @@ const simulationViews: Record<Simulation["id"], (signal: AbortSignal, title: str
   phishing: createPhishingView,
   testament: createWillView,
   "blocs-bourrage": createPaddingView,
+  "cle-partagee": createSharedKeyView,
 };
 type Crumb = Readonly<{ title: string; href: string }>;
 type Route = { kind: "landing" } | { kind: "list"; crumbs: Crumb[]; entries: readonly Named[] } |

@@ -1,8 +1,9 @@
 # Exemples interactifs du chapitre 2
 
 Le chapitre 2 (outils cryptographiques) compte 21 exemples prévus, dans l’ordre
-du cours. Deux sont disponibles : le testament du milliardaire (p. 5 du PDF)
-et les blocs et bourrage (p. 9 à 17). Les dessins et le code sont originaux. Le PDF n’est pas republié.
+du cours. Trois sont disponibles : le testament du milliardaire (p. 5 du PDF),
+les blocs et bourrage (p. 9 à 17) et la clé symétrique partagée (p. 6 et 48
+à 49). Les dessins et le code sont originaux. Le PDF n’est pas republié.
 
 ## Essayer localement
 
@@ -17,6 +18,7 @@ déverrouillage de l’archive :
 
 * [Testament du milliardaire](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/testament)
 * [Blocs et bourrage](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/blocs-bourrage)
+* [Clé symétrique partagée](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/cle-partagee)
 
 ## Testament du milliardaire
 
@@ -63,10 +65,32 @@ de bourrage ; un caractère accentué compte pour deux octets.
 
 Référence : Chapitre 2, blocs et bourrage, p. 9 à 17 du PDF.
 
+## Clé symétrique partagée
+
+Alice et Bob possèdent la même clé secrète, convenue à l’avance. Alice chiffre
+son message ; seul le texte chiffré traverse le réseau. L’intercepteur le voit
+mais, sans la clé, ne peut rien en tirer. Bob déchiffre avec la même clé.
+
+Les quatre étapes :
+
+1. Alice chiffre son message avec la clé.
+2. Le texte chiffré circule : l’intercepteur ne voit que des octets.
+3. L’intercepteur essaie une autre clé : déchiffrement refusé.
+4. Bob déchiffre avec la clé partagée et lit le message.
+
+Sous la scène, l’étudiant chiffre son propre message et essaie des clés : seule
+la clé partagée le déchiffre, un seul caractère de différence suffit à échouer.
+
+Chiffrement réel AES-GCM dans le navigateur (clé dérivée par SHA-256, nonce
+fixe pour la reproductibilité). Données fictives.
+
+Référence : Chapitre 2, clé symétrique partagée, p. 6 et 48 à 49 du PDF.
+
 ## Tests
 
 * `node --test tests/chapter2-models.test.ts` : SHA-256 réel, verdict
   seulement à l’étape 6, le notaire B ne détient jamais le texte ; 11 blocs
   et bourrage sur le seul dernier bloc, aller-retour PKCS#7 pour toutes les
-  longueurs.
+  longueurs ; seule la clé partagée déchiffre, une modification du texte
+  chiffré est rejetée.
 * `npm run test:pages` : parcours pas à pas et édition libre, bureau et mobile.
