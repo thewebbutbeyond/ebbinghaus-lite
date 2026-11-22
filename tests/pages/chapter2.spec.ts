@@ -131,3 +131,38 @@ test("shared key lab: only the shared key decrypts the student's message", async
   await page.getByLabel("Clé essayée pour déchiffrer").fill("tournesol-bleu-43");
   await expect(result).toHaveAttribute("data-lab-decrypted", "false");
 });
+
+const signature = root + "#/he2b/esi/introduction-a-la-cybersecurite/simulations/signature";
+
+test("the signature example: Bob accepts Alice's message and rejects the altered one", async ({ page }, info) => {
+  await authorizeTab(page);
+  await page.goto(signature);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Chapitre 2 • Signature numérique");
+  await expect(counter(page)).toHaveText("Étape 0/6");
+  await expect(page.locator('.example-stage [data-actor="eve"]')).toContainText("pas de clé privée");
+  await next(page, 3);
+  await expect(page.locator(".example-stage [data-signature]")).toHaveText(/^[0-9a-f]{256}$/);
+  await next(page, 2);
+  await expect(page.locator(".example-stage [data-signature-valid]")).toHaveAttribute("data-signature-valid", "true");
+  await next(page);
+  await expect(page.locator(".example-stage [data-signature-valid]")).toHaveAttribute("data-signature-valid", "false");
+  if (info.project.name === "desktop") {
+    await mkdir(".omx/chapter2-examples/screenshots", { recursive: true });
+    await page.screenshot({ path: ".omx/chapter2-examples/screenshots/signature.png", fullPage: true });
+  }
+  await expect(control(page, "Suivant")).toBeDisabled();
+  await control(page, "Précédent").click();
+  await expect(page.locator(".example-stage [data-signature-valid]")).toHaveAttribute("data-signature-valid", "true");
+});
+
+test("signature lab: one changed character breaks the signature, reverting restores it", async ({ page }) => {
+  await authorizeTab(page);
+  await page.goto(signature);
+  const result = page.locator(".signature-lab-result [data-signature-valid]");
+  const field = page.getByLabel("Message reçu par Bob (la signature reste celle d’Alice)");
+  await expect(result).toHaveAttribute("data-signature-valid", "true");
+  await field.fill("Hello Bob ?");
+  await expect(result).toHaveAttribute("data-signature-valid", "false");
+  await field.fill("Hello Bob !");
+  await expect(result).toHaveAttribute("data-signature-valid", "true");
+});
