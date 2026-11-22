@@ -2,6 +2,7 @@ import { el } from "./review-view.ts";
 import { icon } from "./icons.ts";
 
 export const CHAPTER_ONE_SOURCE = "https://gitlab.com/computer-security3/sec1/-/blob/959f789db9fef7649b6b61cb8f812a2909091d41/Ch.%201%20-%20Introduction/slides.tex";
+export const CHAPTER_TWO_SOURCE = "https://gitlab.com/computer-security3/sec1/-/blob/959f789db9fef7649b6b61cb8f812a2909091d41/Ch.%202%20-%20Cryptographic%20tools/slides.tex";
 
 export function stepCounter(): HTMLOutputElement {
   const output = el("output");
@@ -10,7 +11,7 @@ export function stepCounter(): HTMLOutputElement {
   return output;
 }
 
-export function article(id: string, title: string, sections: readonly (readonly [string, string])[], limits: string, reference: string): HTMLElement {
+export function article(id: string, title: string, sections: readonly (readonly [string, string])[], limits: string, reference: string, sourceUrl = CHAPTER_ONE_SOURCE): HTMLElement {
   const content = el("article", "example-article");
   content.setAttribute("aria-labelledby", id + "-explanation");
   const heading = el("h2", "", title);
@@ -23,7 +24,7 @@ export function article(id: string, title: string, sections: readonly (readonly 
   }
   content.append(el("p", "example-assumptions", limits));
   const source = el("a", "", reference);
-  source.href = CHAPTER_ONE_SOURCE;
+  source.href = sourceUrl;
   source.target = "_blank";
   source.rel = "noopener noreferrer";
   const paragraph = el("p", "example-reference");

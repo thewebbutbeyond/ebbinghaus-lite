@@ -2,7 +2,7 @@ type Named = Readonly<{ id: string; title: string }>;
 export type Resource = Named & Readonly<{ path: string }>;
 export type Deck = Resource & Readonly<{ scope: "course" | "chapter" }>;
 export type Correction = Resource & (Readonly<{ kind: "chapter" }> | Readonly<{ kind: "bilan" | "examen"; month: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 }>);
-export type Simulation = Readonly<{ id: "ddos" | "session-volee" | "scytale" | "phishing"; title: string }>;
+export type Simulation = Readonly<{ id: "ddos" | "session-volee" | "scytale" | "phishing" | "testament"; title: string }>;
 export type Course = Named & Readonly<{
   updatedOn: string;
   decks: readonly Deck[];
@@ -50,6 +50,7 @@ const cybersecurite: Course = {
     { id: "ddos", title: "Chapitre 1 • DDoS" },
     { id: "session-volee", title: "Chapitre 1 • Cookie de session volé" },
     { id: "scytale", title: "Chapitre 1 • Scytale" },
+    { id: "testament", title: "Chapitre 2 • Testament du milliardaire" },
   ],
   decks: [
     { ...resource("secu", "revision-complete", cybersecurityTitle + " · Flashcards", "05-revision-complete.json"), scope: "course" },
