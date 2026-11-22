@@ -74,6 +74,13 @@ button.scytale-cell { cursor: pointer; }
 .will-verdict { margin: 0; font-weight: 600; }
 .will-verdict-intact { color: #116329; }
 .will-verdict-altered { color: #b42318; }
+.padding-blocks { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)); }
+.padding-block { display: grid; gap: 0.35rem; }
+.padding-block h3 { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); }
+.padding-bytes { display: flex; flex-wrap: wrap; gap: 2px; }
+.padding-byte { display: inline-grid; place-items: center; width: 1.35rem; height: 1.6rem; border: 1px solid var(--border); border-radius: 3px; font-family: ui-monospace, monospace; font-size: 0.7rem; background: var(--background); }
+.padding-pad { background: #fef0c7; border-color: #dc6803; color: #93370d; font-weight: 600; }
+.padding-empty { border-style: dashed; color: var(--muted-foreground); background: transparent; }
 @media (min-width: 48rem) {
   .example-actors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .example-phases { grid-template-columns: repeat(4, minmax(0, 1fr)); }

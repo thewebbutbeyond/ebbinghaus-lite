@@ -7,6 +7,7 @@ import { createSessionView } from "./session-example-view.ts";
 import { createScytaleView } from "./scytale-view.ts";
 import { createPhishingView } from "./phishing-example-view.ts";
 import { createWillView } from "./will-example-view.ts";
+import { createPaddingView } from "./padding-example-view.ts";
 import { parseDeck } from "./import.ts";
 import { catalog, methodSheetTitle, type Course, type Resource, type Simulation } from "./lite-catalog.ts";
 import { action, el, renderReview, reviewAction } from "./review-view.ts";
@@ -19,6 +20,7 @@ const simulationViews: Record<Simulation["id"], (signal: AbortSignal, title: str
   scytale: createScytaleView,
   phishing: createPhishingView,
   testament: createWillView,
+  "blocs-bourrage": createPaddingView,
 };
 type Crumb = Readonly<{ title: string; href: string }>;
 type Route = { kind: "landing" } | { kind: "list"; crumbs: Crumb[]; entries: readonly Named[] } |
