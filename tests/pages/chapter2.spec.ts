@@ -51,3 +51,47 @@ test("editing the will live: altered text mismatches, the original text matches 
   await input.fill(original + ".");
   await expect(status).toHaveAttribute("data-will-live", "altered");
 });
+
+const padding = root + "#/he2b/esi/introduction-a-la-cybersecurite/simulations/blocs-bourrage";
+
+test("the blocks and padding example cuts the message into 11 blocks and pads the last", async ({ page }, info) => {
+  await authorizeTab(page);
+  await page.goto(padding);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Chapitre 2 • Blocs et bourrage");
+  await expect(counter(page)).toHaveText("Étape 0/3");
+  await next(page);
+  const blocks = page.locator(".example-stage [data-block]");
+  await expect(blocks).toHaveCount(11);
+  await expect(blocks.last().locator(".padding-empty")).toHaveCount(11);
+  await next(page);
+  await expect(blocks).toHaveCount(11);
+  await expect(blocks.last()).toHaveAttribute("data-block-padding", "11");
+  await expect(blocks.last().locator(".padding-pad")).toHaveText(Array(11).fill("0b"));
+  await expect(blocks.first()).toHaveAttribute("data-block-padding", "0");
+  await next(page);
+  await expect(page.locator("[data-padding-recovered]")).toHaveAttribute("data-padding-recovered", "true");
+  await expect(control(page, "Suivant")).toBeDisabled();
+  if (info.project.name === "desktop") {
+    await mkdir(".omx/chapter2-examples/screenshots", { recursive: true });
+    await control(page, "Précédent").click();
+    await page.screenshot({ path: ".omx/chapter2-examples/screenshots/blocs-bourrage.png", fullPage: true });
+  }
+});
+
+test("padding lab: a message that fits exactly gets a full block of padding", async ({ page }) => {
+  await authorizeTab(page);
+  await page.goto(padding);
+  const summary = page.locator("[data-padding-blocks]");
+  const input = page.getByLabel("Message à découper");
+  await input.fill("abc");
+  await expect(summary).toHaveAttribute("data-padding-blocks", "1");
+  await expect(summary).toHaveAttribute("data-padding-bytes", "13");
+  await input.fill("ABCDEFGHIJKLMNOP");
+  await expect(summary).toHaveAttribute("data-padding-blocks", "2");
+  await expect(summary).toHaveAttribute("data-padding-bytes", "16");
+  await page.getByLabel("Taille de bloc").selectOption("8");
+  await expect(summary).toHaveAttribute("data-padding-blocks", "3");
+  await expect(summary).toHaveAttribute("data-padding-bytes", "8");
+  await input.fill("é");
+  await expect(summary).toHaveAttribute("data-padding-bytes", "6");
+});

@@ -1,8 +1,8 @@
 # Exemples interactifs du chapitre 2
 
 Le chapitre 2 (outils cryptographiques) compte 21 exemples prévus, dans l’ordre
-du cours. Le premier est disponible : le testament du milliardaire (p. 5 du
-PDF). Les dessins et le code sont originaux. Le PDF n’est pas republié.
+du cours. Deux sont disponibles : le testament du milliardaire (p. 5 du PDF)
+et les blocs et bourrage (p. 9 à 17). Les dessins et le code sont originaux. Le PDF n’est pas republié.
 
 ## Essayer localement
 
@@ -16,6 +16,7 @@ Le serveur utilise le port 4177. Le lien direct passe par l’écran de
 déverrouillage de l’archive :
 
 * [Testament du milliardaire](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/testament)
+* [Blocs et bourrage](http://127.0.0.1:4177/ebbinghaus-lite/#/he2b/esi/introduction-a-la-cybersecurite/simulations/blocs-bourrage)
 
 ## Testament du milliardaire
 
@@ -43,8 +44,29 @@ Référence : Chapitre 2, testament du milliardaire, p. 5 du PDF ;
 source du cours : `Ch. 2 - Cryptographic tools/slides.tex` du dépôt
 computer-security3/sec1.
 
+## Blocs et bourrage
+
+Un message de 165 octets est découpé en blocs de 16 octets : dix blocs pleins
+et un onzième de 5 octets. Le bourrage PKCS#7 complète ce dernier avec onze
+octets valant 0x0b.
+
+Les trois étapes :
+
+1. Le message est découpé : les blocs 1 à 10 sont pleins, le bloc 11 incomplet.
+2. Le bourrage remplit le dernier bloc avec onze octets 0b.
+3. Au déchiffrement, la valeur du dernier octet indique combien d’octets
+   retirer : le message d’origine est retrouvé.
+
+Sous la scène, l’étudiant tape son propre message et choisit une taille de
+bloc de 8, 16 ou 32 octets. Un message qui tombe juste reçoit un bloc entier
+de bourrage ; un caractère accentué compte pour deux octets.
+
+Référence : Chapitre 2, blocs et bourrage, p. 9 à 17 du PDF.
+
 ## Tests
 
 * `node --test tests/chapter2-models.test.ts` : SHA-256 réel, verdict
-  seulement à l’étape 6, le notaire B ne détient jamais le texte.
+  seulement à l’étape 6, le notaire B ne détient jamais le texte ; 11 blocs
+  et bourrage sur le seul dernier bloc, aller-retour PKCS#7 pour toutes les
+  longueurs.
 * `npm run test:pages` : parcours pas à pas et édition libre, bureau et mobile.
