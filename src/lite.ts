@@ -228,11 +228,16 @@ function showCourse(course: Course, href: string, focus: boolean): void {
   page.append(updated);
   if (course.simulations?.length) {
     const section = el("section", "portal-section");
-    const list = el("ul", "portal-list");
-    for (const simulation of course.simulations) {
-      list.append(row(simulation.title, href + "/simulations/" + simulation.id));
+    section.append(el("h2", "", "Exemples interactifs"));
+    for (const chapter of new Set(course.simulations.map(({ title }) => title.split(" • ")[0]))) {
+      const group = el("div", "lite-correction-month");
+      const list = el("ul", "portal-list");
+      for (const simulation of course.simulations) {
+        if (simulation.title.split(" • ")[0] === chapter) list.append(row(simulation.title, href + "/simulations/" + simulation.id));
+      }
+      group.append(el("h4", "", chapter), list);
+      section.append(group);
     }
-    section.append(el("h2", "", "Exemples interactifs"), list);
     page.append(section);
   }
   for (const [label, resources, isDeck] of [
