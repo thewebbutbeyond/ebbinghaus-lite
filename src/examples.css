@@ -65,6 +65,15 @@ button.scytale-cell { cursor: pointer; }
 .scytale-rod { border-radius: 1.5rem; border: 1px solid var(--border); padding: 1rem; background: var(--secondary); }
 .scytale-result { display: block; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-family: ui-monospace, monospace; font-size: 1.125rem; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 3rem; }
 .scytale-settings :focus-visible, .scytale-scroll:focus-visible, .scytale-cell:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
+.will-text { margin: 0; padding: 1rem; border-left: 3px solid var(--border); background: var(--secondary); border-radius: var(--radius); line-height: 1.6; }
+.will-comparison, .will-lab { display: grid; gap: 0.75rem; }
+.will-hash { display: grid; gap: 0.25rem; }
+.will-hash span { color: var(--muted-foreground); font-size: 0.875rem; }
+.will-hash code { font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+.will-input { width: 100%; box-sizing: border-box; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font: inherit; line-height: 1.5; }
+.will-verdict { margin: 0; font-weight: 600; }
+.will-verdict-intact { color: #116329; }
+.will-verdict-altered { color: #b42318; }
 @media (min-width: 48rem) {
   .example-actors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .example-phases { grid-template-columns: repeat(4, minmax(0, 1fr)); }
