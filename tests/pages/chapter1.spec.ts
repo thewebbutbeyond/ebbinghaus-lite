@@ -33,7 +33,7 @@ test("the course lists all four examples in course order and each route preserve
   await authorizeTab(page);
   await page.goto(course);
   const section = page.locator(".portal-section").filter({ has: page.getByRole("heading", { name: "Exemples interactifs" }) });
-  await expect(section.locator(".portal-resource-name")).toHaveText(["Chapitre 1 • Phishing", "Chapitre 1 • DDoS", "Chapitre 1 • Cookie de session volé", "Chapitre 1 • Scytale", "Chapitre 2 • Testament du milliardaire", "Chapitre 2 • Blocs et bourrage"]);
+  await expect(section.locator(".portal-resource-name")).toHaveText(["Chapitre 1 • Phishing", "Chapitre 1 • DDoS", "Chapitre 1 • Cookie de session volé", "Chapitre 1 • Scytale", "Chapitre 2 • Testament du milliardaire", "Chapitre 2 • Blocs et bourrage", "Chapitre 2 • Clé symétrique partagée"]);
   const corner = () => page.locator("#lite-back").evaluate(element => {
     const rect = element.getBoundingClientRect();
     return { x: rect.left + scrollX, y: rect.top + scrollY };
