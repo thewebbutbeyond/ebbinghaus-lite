@@ -5,7 +5,7 @@ import { authorizeTab, root, unlock } from "../archive-fixture.ts";
 const course = root + "#/he2b/esi/introduction-a-la-cybersecurite";
 const examples = [
   { id: "session-volee", title: "Chapitre 1 • Cookie de session volé", last: 6 },
-  { id: "scytale", title: "Chapitre 1 • Scytale", last: 4 },
+  { id: "scytale", title: "Chapitre 1 • Scytale", last: 3 },
   { id: "phishing", title: "Chapitre 1 • Phishing", last: 5 },
 ] as const;
 const counter = (page: Page) => page.locator("[data-example-step]");
@@ -119,58 +119,54 @@ test("phishing discloses fictional credentials only after the separate submit ev
   expect(requests.every(url => new URL(url).hostname !== "campus-assistance.test" && new URL(url).hostname !== "campus-demo.test")).toBe(true);
 });
 
-test("scytale computes the known permutation, preserves its tape and tracks individual letters", async ({ page }) => {
+test("scytale reads the message only when the stick matches the strip", async ({ page }) => {
   await authorizeTab(page);
   await page.goto(course + "/simulations/scytale");
-  await page.getByLabel("Message", { exact: true }).fill("ABCDEF");
-  await page.getByLabel("Gabarit d’écriture", { exact: true }).selectOption("2");
-  await page.getByLabel("Gabarit de lecture", { exact: true }).selectOption("2");
-  await next(page, 4);
-  const result = page.getByLabel("Message reconstitué", { exact: true });
-  await expect(result).toHaveText("ABCDEF");
-  const tape = page.locator('[data-scytale-part="tape"] button');
-  await expect(tape).toHaveText(["A", "D", "B", "E", "C", "F"]);
-  await tape.nth(1).click();
-  await expect(page.locator('.scytale-cell[aria-pressed="true"]')).toHaveCount(4);
-  await expect(page.locator('.scytale-cell[aria-pressed="true"]')).toHaveText(["D", "D", "D", "D"]);
-  await page.getByLabel("Gabarit de lecture", { exact: true }).selectOption("3");
-  await expect(result).toHaveText("AEDCBF");
-  await expect(tape).toHaveText(["A", "D", "B", "E", "C", "F"]);
-  await control(page, "Précédent").click();
-  await expect(counter(page)).toHaveText("Étape 3/4");
-  await expect(result).toHaveCount(0);
+  await page.getByLabel("Message", { exact: true }).fill("ABC");
+  await expect(page.getByRole("img", { name: "Face avant du bâton : ABC" })).toBeVisible();
   await next(page);
-  await expect(result).toHaveText("AEDCBF");
-  await page.getByLabel("Message", { exact: true }).fill("ABCDE");
-  await expect(counter(page)).toHaveText("Étape 0/4");
-  await page.getByLabel("Gabarit de lecture", { exact: true }).selectOption("2");
-  await next(page, 4);
-  await expect(result).toHaveText("ABCDE");
-  await expect(page.locator('[data-scytale-part="tape"] [data-padding="original"]')).toHaveCount(1);
+  await expect(page.locator('[data-scytale-part="tape"] .scytale-cell')).toHaveCount(9);
+  await expect(page.locator('[data-scytale-part="tape"] [data-front]')).toHaveCount(0);
+  await next(page);
+  await expect(page.locator('[data-scytale-part="tape"] [data-front]')).toHaveCount(3);
+  await next(page);
+  const result = page.getByLabel("Lecture sur la face avant", { exact: true });
+  await expect(result).toHaveAttribute("data-match", "false");
+  await expect(page.locator(".will-verdict")).toContainText("trop épais");
+  await page.getByLabel("Bâton : nombre de faces", { exact: true }).fill("3");
+  await expect(result).toHaveText("ABC");
+  await expect(result).toHaveAttribute("data-match", "true");
+  await expect(page.getByRole("img", { name: "Face avant du bâton : ABC" })).toBeVisible();
+  await page.getByLabel("Languette : une lettre du message toutes les…", { exact: true }).fill("5");
+  await expect(result).toHaveAttribute("data-match", "false");
+  await expect(page.locator(".will-verdict")).toContainText("trop fin");
+  await page.getByLabel("Bâton : nombre de faces", { exact: true }).fill("5");
+  await expect(result).toHaveText("ABC");
 });
 
 test("scytale retains spaces, graphemes and empty input, validates length and resets all settings", async ({ page }) => {
   await authorizeTab(page);
   await page.goto(course + "/simulations/scytale");
   const input = page.getByLabel("Message", { exact: true });
+  const faces = page.getByLabel("Bâton : nombre de faces", { exact: true });
   const source = " é e\u0301 👩‍💻 ";
   await input.fill(source);
-  await next(page, 4);
-  expect(await page.getByLabel("Message reconstitué", { exact: true }).textContent()).toBe(source);
+  await faces.fill("3");
+  await next(page, 3);
+  expect(await page.getByLabel("Lecture sur la face avant", { exact: true }).textContent()).toBe(source);
   await input.fill("");
-  await next(page, 4);
-  await expect(page.getByLabel("Message reconstitué", { exact: true })).toHaveText("");
+  await next(page, 3);
+  await expect(page.getByLabel("Lecture sur la face avant", { exact: true })).toHaveText("");
   await input.fill("a".repeat(81));
   await expect(input).toHaveAttribute("aria-invalid", "true");
   await expect(page.locator("#scytale-error")).toHaveText("Le message peut contenir jusqu’à 80 caractères.");
   await expect(control(page, "Lire")).toBeDisabled();
-  await page.getByLabel("Gabarit de lecture", { exact: true }).selectOption("8");
   await control(page, "Recommencer").click();
   await expect(input).toHaveValue("RENDEZVOUS A MIDI");
-  await expect(page.getByLabel("Gabarit d’écriture", { exact: true })).toHaveValue("3");
-  await expect(page.getByLabel("Gabarit de lecture", { exact: true })).toHaveValue("3");
+  await expect(page.getByLabel("Languette : une lettre du message toutes les…", { exact: true })).toHaveValue("3");
+  await expect(faces).toHaveValue("4");
   await expect(input).not.toHaveAttribute("aria-invalid");
-  await expect(counter(page)).toHaveText("Étape 0/4");
+  await expect(counter(page)).toHaveText("Étape 0/3");
   await expect(control(page, "Lire")).toBeEnabled();
 });
 
@@ -242,8 +238,8 @@ for (const example of examples) {
       await control(page, "Recommencer").click();
       if (example.id === "scytale") {
         await page.getByLabel("Message", { exact: true }).fill("A".repeat(80));
-        await page.getByLabel("Gabarit d’écriture", { exact: true }).selectOption("2");
-        await page.getByLabel("Gabarit de lecture", { exact: true }).selectOption("8");
+        await page.getByLabel("Languette : une lettre du message toutes les…", { exact: true }).fill("8");
+        await page.getByLabel("Bâton : nombre de faces", { exact: true }).fill("3");
       }
       await next(page, example.last);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

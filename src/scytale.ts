@@ -1,40 +1,32 @@
 export const MAX_MESSAGE_LENGTH = 80;
 export const DEFAULT_MESSAGE = "RENDEZVOUS A MIDI";
-export const DEFAULT_ROWS = 3;
-export type Cell = Readonly<{ id: number; value: string | null }>;
-export type Grid = readonly (readonly (Cell | null)[])[];
-export type Encoded = Readonly<{ message: string; rows: number; columns: number; grid: Grid; tape: readonly Cell[] }>;
-export type Decoded = Readonly<{ rows: number; columns: number; grid: Grid; message: string }>;
+export const DEFAULT_SPACING = 3;
+export const DEFAULT_FACES = 4;
+export const MIN_TURN = 3;
+export const MAX_TURN = 8;
+const FILLER = "QWXKZJYPHGBFVLCTMNSDRAEOIU";
+export type Cell = Readonly<{ index: number; value: string; message: boolean }>;
 
 export function characters(message: string): string[] {
   return Array.from(new Intl.Segmenter("fr", { granularity: "grapheme" }).segment(message), part => part.segment);
 }
 
-function checkRows(rows: number): void {
-  if (!Number.isInteger(rows) || rows < 2 || rows > 8) throw new RangeError("Invalid scytale row count");
+function check(value: number): void {
+  if (!Number.isInteger(value) || value < MIN_TURN || value > MAX_TURN) throw new RangeError("Invalid scytale setting");
 }
 
-export function encode(message: string, rows: number): Encoded {
-  checkRows(rows);
+/** Strip carrying one message character every `spacing` cells, the others being filler letters. */
+export function strip(message: string, spacing: number): Cell[] {
+  check(spacing);
   const letters = characters(message);
   if (letters.length > MAX_MESSAGE_LENGTH) throw new RangeError("Scytale message too long");
-  const columns = Math.ceil(letters.length / rows);
-  const grid: Cell[][] = Array.from({ length: rows }, (_, row) => Array.from({ length: columns }, (_, column) => {
-    const id = row * columns + column;
-    return { id, value: letters[id] ?? null };
-  }));
-  const tape: Cell[] = [];
-  for (let column = 0; column < columns; column++) {
-    for (let row = 0; row < rows; row++) tape.push(grid[row]![column]!);
-  }
-  return { message, rows, columns, grid, tape };
+  return Array.from({ length: letters.length * spacing }, (_, index) => index % spacing === 0
+    ? { index, value: letters[index / spacing]!, message: true }
+    : { index, value: FILLER[(index * 7 + Math.floor(index / spacing) * 3) % FILLER.length]!, message: false });
 }
 
-export function decode(tape: readonly Cell[], rows: number): Decoded {
-  checkRows(rows);
-  const columns = Math.ceil(tape.length / rows);
-  const grid = Array.from({ length: rows }, (_, row) => Array.from({ length: columns }, (_, column) =>
-    tape[column * rows + row] ?? null));
-  const message = grid.flat().map(cell => cell?.value ?? "").join("");
-  return { rows, columns, grid, message };
+/** Cells that land on the front face of a stick with `faces` faces once the strip is wound around it. */
+export function frontFace(cells: readonly Cell[], faces: number): Cell[] {
+  check(faces);
+  return cells.filter(cell => cell.index % faces === 0);
 }

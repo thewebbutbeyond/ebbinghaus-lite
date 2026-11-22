@@ -48,8 +48,8 @@ via l’AbortSignal du routeur. Recharger recrée l’état initial.
 Les modèles session et phishing construisent une série déterministe
 d’instantanés à partir de transitions pures. Le lecteur parcourt ces états ;
 il ne rejoue pas une collecte réelle et ne produit pas de nouveaux événements
-en revenant en arrière. La scytale recalcule une permutation déterministe pour
-les paramètres courants, puis permet d’en inspecter les représentations.
+en revenant en arrière. La scytale recalcule la languette et la face avant du bâton pour les
+paramètres courants.
 
 ## Cookie de session volé
 
@@ -80,41 +80,30 @@ jeton et sans mot de passe.
 ## Scytale
 
 Référence : chapitre 1, diapositives 35 et 36, pages 64 et 65. Le cours présente
-un exemple historique et une photographie. La grille et ses conventions sont
-notre transposition pédagogique explicite, pas un algorithme donné par la
-diapositive.
+un exemple historique et la photographie d’une languette enroulée autour d’un
+bâton. Le dessin plat du bâton, ses faces et les lettres de remplissage sont
+notre transposition pédagogique.
 
-Le message est conservé tel quel, y compris espaces, accents et caractères
-composés. Intl.Segmenter identifie les graphèmes : un accent combiné ou un emoji
-composé n’est pas coupé en plusieurs cases. Le message est limité à 80
-graphèmes, les gabarits à des nombres entiers de 2 à 8 caractères par tour.
+Deux réglages indépendants, de 3 à 8 :
 
-Avec r lignes et L caractères, la largeur est ceil(L/r). On remplit les lignes,
-puis on lit les colonnes de haut en bas pour obtenir la bande. Pour relire, on
-remplit les colonnes selon le gabarit choisi, puis on lit les lignes. Le réglage
-est discret : ce n’est pas un diamètre physique du bâton.
+* la languette : une lettre du message toutes les k cases, les autres cases
+  portant des lettres de remplissage déterministes ;
+* le bâton : n faces (triangle, carré… octogone), dessinées à côté du curseur.
 
-Chaque case conserve son identifiant d’origine. Une case de remplissage a la
-valeur null, distincte d’un véritable espace. Lorsqu’un autre gabarit laisse un
-emplacement inoccupé, celui-ci n’ajoute pas de caractère. La reconstitution
-écarte uniquement les cases vides et de remplissage.
+Enroulée sur un bâton à n faces, la languette revient sur la face avant toutes
+les n cases. La face avant montre donc les cases 0, n, 2n… Le message se lit si
+et seulement si k = n ; sinon la face mêle message et remplissage, et le verdict
+indique si le bâton est trop fin (n < k) ou trop épais (n > k).
 
-Cas de référence :
+Étapes : Alice écrit sur une face de son bâton (k faces), la languette déroulée,
+la languette enroulée sur le bâton du destinataire avec les cases de la face
+avant en surbrillance, puis la lecture et le verdict. Changer le message revient
+à l’étape 0 ; changer un curseur conserve l’étape. Le message est limité à 80
+graphèmes, découpés par Intl.Segmenter. Recommencer restaure RENDEZVOUS A MIDI,
+une languette à 3 et un bâton à 4 faces : l’élève part d’un mauvais bâton.
 
-* ABCDEF, écriture sur deux lignes : ABC puis DEF.
-* Bande obtenue : ADBECF.
-* Lecture sur deux lignes : ABCDEF.
-* Lecture sur trois lignes : AEDCBF.
-
-Un autre gabarit ne rend pas nécessairement tout texte illisible : AAAAAA reste
-identique. Le résultat est affiché sans verdict artificiel. Le bouton d’une
-lettre met en évidence la même case dans chaque représentation, y compris
-lorsque le texte contient plusieurs fois la même lettre.
-
-Changer le message ou le gabarit d’écriture suspend la lecture et reprend au
-début. Changer le gabarit de lecture conserve la bande. Les longues bandes
-défilent dans leur propre panneau, sans élargir la page. Recommencer restaure
-le message RENDEZVOUS A MIDI et les deux gabarits à 3.
+Cas de référence : ABC avec k = 3 donne une languette de 9 cases, le message aux
+cases 0, 3 et 6 ; un bâton à 3 faces lit ABC.
 
 ## Phishing
 
