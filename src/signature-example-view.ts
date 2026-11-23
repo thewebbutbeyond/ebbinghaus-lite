@@ -67,7 +67,7 @@ export function createSignatureView(signal: AbortSignal, title: string): HTMLEle
       const box = el("p", "cipher-text", signature);
       box.dataset.signature = "";
       scene.append(exchange("Empreinte", "Chiffrer avec la clé privée", "Signature : " + short(signature)), box,
-        el("p", "example-stage-caption", "On chiffre l’empreinte, pas le message : une petite valeur de 256 bits, faisable avec la cryptographie à clé publique."));
+        el("p", "example-stage-caption", "Alice chiffre l’empreinte avec sa clé privée ; chacun pourra la déchiffrer avec sa clé publique pour vérifier. On chiffre l’empreinte plutôt que le message, car le chiffrement asymétrique est lent et une valeur de 256 bits reste petite."));
     }
     if (cursor === 4) scene.append(exchange("Alice", "Bob", "« " + SIGNED_MESSAGE + " » + signature " + short(signature)),
       el("p", "example-stage-caption", "Le message n’est pas chiffré : tout le monde peut le lire. La signature ne cache rien, elle prouve l’origine et l’intégrité."));
