@@ -57,7 +57,7 @@ export function createSignatureView(signal: AbortSignal, title: string): HTMLEle
     scene.replaceChildren(el("h2", "", titles[cursor]));
     const parties = el("div", "key-parties");
     parties.append(party("Alice", "alice", "🔑 privée : " + PRIVATE_KEY, "🔑 publique : " + PUBLIC_KEY),
-      party("Bob", "bob", "🔑 publique d’Alice"), party("Intercepteur", "eve", "🔑 publique d’Alice", "🔒 pas de clé privée"));
+      party("Bob", "bob", "🔑 publique d’Alice"), party("Intercepteur (attaquant)", "eve", "🔑 publique d’Alice", "🔒 pas de clé privée"));
     scene.append(parties);
     if (cursor === 0) scene.append(el("p", "example-stage-caption", "Alice garde sa clé privée pour elle. Sa clé publique est connue de tous, y compris de l’intercepteur : elle sert seulement à vérifier."));
     if (cursor === 1) scene.append(el("blockquote", "will-text", SIGNED_MESSAGE), exchange("Message + clé privée d’Alice", "Signer", "Signature numérique"), exchange("Bob", "Authentifier", "Signature + clé publique d’Alice"),
