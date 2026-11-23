@@ -44,7 +44,7 @@ const algorithmique: Course = {
 const cybersecurite: Course = {
   id: "introduction-a-la-cybersecurite",
   title: cybersecurityTitle,
-  updatedOn: "2026-11-16",
+  updatedOn: "2026-11-23",
   simulations: [
     { id: "phishing", title: "Chapitre 1 • Phishing" },
     { id: "ddos", title: "Chapitre 1 • DDoS" },
