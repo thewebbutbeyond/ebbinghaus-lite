@@ -37,7 +37,7 @@ export function createSharedKeyView(signal: AbortSignal, title: string): HTMLEle
     counter.value = "Étape " + cursor + "/" + SHARED_KEY_STEPS;
     scene.replaceChildren(el("h2", "", titles[cursor]));
     const parties = el("div", "key-parties");
-    const eveCard = party("Intercepteur", "eve", null);
+    const eveCard = party("Intercepteur (attaquant)", "eve", null);
     parties.append(party("Alice", "alice", SHARED_SECRET), eveCard, party("Bob", "bob", SHARED_SECRET));
     scene.append(parties);
     if (cursor === 0) scene.append(el("p", "example-stage-caption", "La clé a été convenue à l’avance, par un canal sûr. C’est la même clé des deux côtés : le chiffrement est symétrique."));
